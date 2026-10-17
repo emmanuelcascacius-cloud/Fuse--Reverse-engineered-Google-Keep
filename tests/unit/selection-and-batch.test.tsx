@@ -55,3 +55,4 @@ describe('Multi-Select Batch Actions (Issue 10)', () => {
     expect(onClear).toHaveBeenCalled();
   });
 });
+

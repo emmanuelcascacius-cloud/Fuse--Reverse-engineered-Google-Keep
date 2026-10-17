@@ -32,3 +32,4 @@ describe('PostgreSQL Migration & Index Integrity (Issue 02)', () => {
     expect(sqlContent).toContain('CREATE INDEX IF NOT EXISTS idx_notes_body_trgm ON notes USING GIN (body gin_trgm_ops)');
   });
 });
+

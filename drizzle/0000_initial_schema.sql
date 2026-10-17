@@ -66,3 +66,4 @@ CREATE INDEX IF NOT EXISTS idx_notes_user_domain ON notes (user_id, source_domai
 CREATE INDEX IF NOT EXISTS idx_notes_user_color ON notes (user_id, color) WHERE is_trashed = FALSE AND deleted_at IS NULL;
 CREATE INDEX IF NOT EXISTS idx_labels_user_updated ON labels (user_id, updated_at);
 CREATE INDEX IF NOT EXISTS idx_notes_body_trgm ON notes USING GIN (body gin_trgm_ops);
+

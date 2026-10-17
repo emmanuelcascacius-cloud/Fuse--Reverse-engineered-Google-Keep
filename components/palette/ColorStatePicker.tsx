@@ -150,3 +150,4 @@ export function ColorPreviewDot({ colorId }: { colorId: NoteColorId }) {
     />
   );
 }
+

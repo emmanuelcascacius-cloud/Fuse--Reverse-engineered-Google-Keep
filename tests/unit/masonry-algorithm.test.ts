@@ -102,3 +102,4 @@ describe('Masonry Bin-Packing Layout Algorithm (Issue 06)', () => {
     expect(columns[1].map((n) => n.id)).toEqual(['2']);
   });
 });
+

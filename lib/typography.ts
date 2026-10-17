@@ -46,3 +46,4 @@ export function getTypographyProfile(bodyText: string): TypographyProfile {
     letterSpacingClass: 'tracking-[0.01em]',
   };
 }
+

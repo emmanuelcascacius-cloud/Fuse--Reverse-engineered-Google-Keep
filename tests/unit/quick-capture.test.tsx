@@ -76,3 +76,4 @@ describe('QuickCaptureBar Component (Issue 07)', () => {
     expect(screen.getByDisplayValue('Item 2')).toBeInTheDocument();
   });
 });
+

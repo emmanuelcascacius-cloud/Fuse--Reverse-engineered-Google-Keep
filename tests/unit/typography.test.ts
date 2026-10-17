@@ -43,3 +43,4 @@ describe('Dynamic Typography Scaling Engine (Issue 05)', () => {
     expect(multiLine13.lineClampClass).toBe('line-clamp-[14]');
   });
 });
+

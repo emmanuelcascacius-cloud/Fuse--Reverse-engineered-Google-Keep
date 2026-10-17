@@ -58,3 +58,4 @@ describe('Priority State ColorStatePicker Component (Issue 08)', () => {
     expect(onSelect).toHaveBeenCalledWith('clay');
   });
 });
+

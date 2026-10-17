@@ -65,3 +65,4 @@ describe('Priority State 12-Color Palette (Issue 03)', () => {
     expect(coralDark.border).toBe('#7C3A37');
   });
 });
+

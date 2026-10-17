@@ -54,3 +54,4 @@ describe('Sync Outbox Queue Engine (Issue 04)', () => {
     expect((outbox[0].payload as { body: string }).body).toBe('Note C');
   });
 });
+

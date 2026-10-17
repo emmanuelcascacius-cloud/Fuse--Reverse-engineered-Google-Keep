@@ -147,3 +147,4 @@ export const useNotesStore = create<NotesState>((set, get) => ({
     set({ activeFilter: {} });
   },
 }));
+

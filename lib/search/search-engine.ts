@@ -75,3 +75,4 @@ export function highlightText(text: string, query: string): HighlightSegment[] {
       isMatch: part.toLowerCase() === query.trim().toLowerCase(),
     }));
 }
+

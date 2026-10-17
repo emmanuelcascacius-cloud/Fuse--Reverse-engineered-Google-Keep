@@ -111,3 +111,4 @@ describe('IndexedDB Local Engine & Notes Repository (Issue 04)', () => {
     expect(unknownNotes).toHaveLength(0);
   });
 });
+

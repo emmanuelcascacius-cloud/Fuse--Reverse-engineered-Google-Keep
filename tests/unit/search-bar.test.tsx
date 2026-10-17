@@ -46,3 +46,4 @@ describe('SearchBar Component (Issue 11)', () => {
     expect(screen.getByText('COLORS (PRIORITY STATES FIRST)')).toBeInTheDocument();
   });
 });
+

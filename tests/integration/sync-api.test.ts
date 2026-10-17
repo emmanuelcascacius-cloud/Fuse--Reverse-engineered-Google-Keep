@@ -120,3 +120,4 @@ describe('Backend Delta Sync & LWW Resolution (Issue 12)', () => {
     expect(delta[0].id).toBe('note-2');
   });
 });
+

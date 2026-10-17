@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "Fuse - Proactive Contextual Notes",
+  "version": "1.0.0",
+  "description": "Fast, lightweight note-taking modeled after Google Keep. Notes find you when you revisit websites.",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "contextMenus",
+    "tabs",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Take a Fuse Note"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
+

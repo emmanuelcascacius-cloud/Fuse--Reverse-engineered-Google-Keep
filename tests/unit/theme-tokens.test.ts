@@ -33,3 +33,4 @@ describe('Design System Theme Tokens & CSS Properties (Issue 03)', () => {
     expect(cssContent).toContain('--state-black-dot: #202124');
   });
 });
+

@@ -59,3 +59,4 @@ export class FuseDatabase extends Dexie {
 }
 
 export const db = new FuseDatabase();
+

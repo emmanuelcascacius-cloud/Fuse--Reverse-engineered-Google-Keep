@@ -103,3 +103,4 @@ describe('Instant Client-Side Search Engine (Issue 11)', () => {
     ]);
   });
 });
+

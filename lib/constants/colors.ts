@@ -224,3 +224,4 @@ export function getNoteColorClasses(id?: string | null, isDark = false): { bg: s
   const color = getNoteColor(id);
   return isDark ? color.dark : color.light;
 }
+

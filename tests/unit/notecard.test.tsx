@@ -108,3 +108,4 @@ describe('Rectangular NoteCard Component (Issue 05)', () => {
     expect(screen.getByText(/1 checked item/i)).toBeInTheDocument();
   });
 });
+
