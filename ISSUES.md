@@ -12,8 +12,8 @@ This roadmap decomposes [`specs.md`](file:///workspaces/fuse/specs.md) and [`des
 | **02** | [PostgreSQL Database Schema, Drizzle ORM Models & Trigram Indexes](#issue-02-postgresql-database-schema-drizzle-orm-models--trigram-indexes) | Backend / Database | ✅ Completed |
 | **03** | [Design System CSS Custom Properties, Dual-Theme Tokens & Priority 12-Color Palette](#issue-03-design-system-css-custom-properties-dual-theme-tokens--priority-12-color-palette) | Frontend Design System | ✅ Completed |
 | **04** | [IndexedDB Local-First Engine (`Dexie.js`) & Offline `sync_outbox` Mutation Store](#issue-04-indexeddb-local-first-engine-dexiejs--offline-sync_outbox-mutation-store) | Client Storage & State | ✅ Completed |
-| **05** | [Dynamic Typography Scaling Engine & Rectangular `<NoteCard />` Component](#issue-05-dynamic-typography-scaling-engine--rectangular-notecard--component) | Core UI Components | 🔄 In Progress |
-| **06** | [Greedy Bin-Packing `<MasonryGrid />` & Pinned/Others Section Layout](#issue-06-greedy-bin-packing-masonrygrid--pinnedothers-section-layout) | Core UI Components | ⏳ Pending |
+| **05** | [Dynamic Typography Scaling Engine & Rectangular `<NoteCard />` Component](#issue-05-dynamic-typography-scaling-engine--rectangular-notecard--component) | Core UI Components | ✅ Completed |
+| **06** | [Greedy Bin-Packing `<MasonryGrid />` & Pinned/Others Section Layout](#issue-06-greedy-bin-packing-masonrygrid--pinnedothers-section-layout) | Core UI Components | 🔄 In Progress |
 | **07** | [Zero-Friction `<QuickCaptureBar />` & Shared-Element `<NoteModal />` with Auto-Save](#issue-07-zero-friction-quickcapturebar--shared-element-notemodal-with-auto-save) | Core UI Components | ⏳ Pending |
 | **08** | [Priority State `<ColorStatePicker />` (Red, Blue, Black Primary Ordering)](#issue-08-priority-state-colorstatepicker-red-blue-black-primary-ordering) | Core UI Components | ⏳ Pending |
 | **09** | [Labels System, Dynamic `<SidebarNav />` Drawer & Inline `#label` Autocomplete](#issue-09-labels-system-dynamic-sidebarnav--drawer--inline-label-autocomplete) | Core UI & Navigation | ⏳ Pending |
