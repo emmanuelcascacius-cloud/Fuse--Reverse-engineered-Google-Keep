@@ -9,9 +9,9 @@ This roadmap decomposes [`specs.md`](file:///workspaces/fuse/specs.md) and [`des
 | Issue # | Title | Target Subsystem | Status |
 | :---: | :--- | :--- | :---: |
 | **01** | [Monorepo & Next.js 15+ Workspace Setup with Strict TypeScript & Vitest](#issue-01-monorepo--nextjs-15-workspace-setup-with-strict-typescript--vitest) | Project Architecture | ✅ Completed |
-| **02** | [PostgreSQL Database Schema, Drizzle ORM Models & Trigram Indexes](#issue-02-postgresql-database-schema-drizzle-orm-models--trigram-indexes) | Backend / Database | 🔄 In Progress |
-| **03** | [Design System CSS Custom Properties, Dual-Theme Tokens & Priority 12-Color Palette](#issue-03-design-system-css-custom-properties-dual-theme-tokens--priority-12-color-palette) | Frontend Design System | ⏳ Pending |
-| **04** | [IndexedDB Local-First Engine (`Dexie.js`) & Offline `sync_outbox` Mutation Store](#issue-04-indexeddb-local-first-engine-dexiejs--offline-sync_outbox-mutation-store) | Client Storage & State | ⏳ Pending |
+| **02** | [PostgreSQL Database Schema, Drizzle ORM Models & Trigram Indexes](#issue-02-postgresql-database-schema-drizzle-orm-models--trigram-indexes) | Backend / Database | ✅ Completed |
+| **03** | [Design System CSS Custom Properties, Dual-Theme Tokens & Priority 12-Color Palette](#issue-03-design-system-css-custom-properties-dual-theme-tokens--priority-12-color-palette) | Frontend Design System | ✅ Completed |
+| **04** | [IndexedDB Local-First Engine (`Dexie.js`) & Offline `sync_outbox` Mutation Store](#issue-04-indexeddb-local-first-engine-dexiejs--offline-sync_outbox-mutation-store) | Client Storage & State | 🔄 In Progress |
 | **05** | [Dynamic Typography Scaling Engine & Rectangular `<NoteCard />` Component](#issue-05-dynamic-typography-scaling-engine--rectangular-notecard--component) | Core UI Components | ⏳ Pending |
 | **06** | [Greedy Bin-Packing `<MasonryGrid />` & Pinned/Others Section Layout](#issue-06-greedy-bin-packing-masonrygrid--pinnedothers-section-layout) | Core UI Components | ⏳ Pending |
 | **07** | [Zero-Friction `<QuickCaptureBar />` & Shared-Element `<NoteModal />` with Auto-Save](#issue-07-zero-friction-quickcapturebar--shared-element-notemodal-with-auto-save) | Core UI Components | ⏳ Pending |
