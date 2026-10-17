@@ -96,3 +96,4 @@ export function Checklist({ items, onToggleItem, interactive = true }: Checklist
     </div>
   );
 }
+

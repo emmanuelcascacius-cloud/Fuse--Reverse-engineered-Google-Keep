@@ -65,3 +65,4 @@ export function ShortcutsModal({ isOpen, onClose }: ShortcutsModalProps) {
     </div>
   );
 }
+
