@@ -175,7 +175,7 @@ Generate **atomic, single-task GitHub Issues** in this exact 6-phase order:
 
 * `Issue 1.3`: Build **Zero-Title Entry** note composer (launch app = immediate cursor focus in body).
 
-* `Issue 1.4`: Build **Spatial Scan Masonry Grid** rendering 15–20 note bodies simultaneously.
+* `Issue 1.4`: Build **Spatial Scan Masonry Grid** rendering 15–20 note bodies simultaneously for different screens
 
 * `Issue 1.5`: Build **8–10 Muted Color Bandwidth Picker** with $< 500\text{ ms}$ card tinting.
 
