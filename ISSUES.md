@@ -22,7 +22,7 @@ This roadmap decomposes [`specs.md`](file:///workspaces/fuse/specs.md) and [`des
 | **12** | [Backend Delta Sync (`/api/v1/sync` LWW) & Domain Context REST API](#issue-12-backend-delta-sync-apiv1sync-lww--domain-context-rest-api) | Backend API | ✅ Completed |
 | **13** | [Chrome Extension Manifest V3 Web Clipper & Active URL Listener](#issue-13-chrome-extension-manifest-v3-web-clipper--active-url-listener) | Chrome Extension | ✅ Completed |
 | **14** | [Chrome Extension Shadow DOM Proactive Overlay (`<ContextualNoteOverlay />`)](#issue-14-chrome-extension-shadow-dom-proactive-overlay-contextualnoteoverlay) | Chrome Extension | ✅ Completed |
-| **15** | [Full-System Integration, PWA Offline Service Worker & Quality Verification Gate](#issue-15-full-system-integration-pwa-offline-service-worker--quality-verification-gate) | Integration & QA | 🔄 In Progress |
+| **15** | [Full-System Integration, PWA Offline Service Worker & Quality Verification Gate](#issue-15-full-system-integration-pwa-offline-service-worker--quality-verification-gate) | Integration & QA | ✅ Completed |
 
 ---
 

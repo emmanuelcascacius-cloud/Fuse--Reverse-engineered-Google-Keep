@@ -1,9 +1,12 @@
 import type { Metadata } from 'next';
 import '@/styles/globals.css';
+import { ThemeProvider } from '@/components/theme/ThemeProvider';
+import { ServiceWorkerRegister } from '@/components/pwa/ServiceWorkerRegister';
 
 export const metadata: Metadata = {
   title: 'Fuse',
   description: 'Fast, lightweight, offline-first note-taking modeled after Google Keep',
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({
@@ -14,9 +17,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen bg-canvas text-text-primary antialiased">
-        {children}
+        <ThemeProvider>
+          <ServiceWorkerRegister />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
 }
-
