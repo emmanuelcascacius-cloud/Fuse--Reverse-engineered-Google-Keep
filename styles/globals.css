@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Light Mode — Calm Warm Paper & Ink */
+  --bg-canvas: #FFFFFF;
+  --bg-header: rgba(255, 255, 255, 0.92);
+  --bg-search: #F1F3F4;
+  --bg-search-focus: #FFFFFF;
+  --bg-sidebar-active: #FEEFC3;
+
+  --text-primary: #202124;
+  --text-secondary: #5F6368;
+  --text-muted: #80868B;
+
+  --border-hairline: #E0E0E0;
+  --icon-default: #5F6368;
+  --icon-hover-bg: rgba(95, 99, 104, 0.087);
+
+  /* Primary State Accent Dots */
+  --state-red-dot: #D93025;
+  --state-blue-dot: #1A73E8;
+  --state-black-dot: #202124;
+}
+
+[data-theme="dark"] {
+  /* Dark Mode — Google Keep Calm Charcoal */
+  --bg-canvas: #202124;
+  --bg-header: rgba(32, 33, 36, 0.92);
+  --bg-search: #525355;
+  --bg-search-focus: #303134;
+  --bg-sidebar-active: #41331C;
+
+  --text-primary: #E8EAED;
+  --text-secondary: #9AA0A6;
+  --text-muted: #7F868D;
+
+  --border-hairline: #5F6368;
+  --icon-default: #9AA0A6;
+  --icon-hover-bg: rgba(232, 234, 237, 0.08);
+
+  /* Primary State Accent Dots in Dark Mode */
+  --state-red-dot: #F28B82;
+  --state-blue-dot: #8AB4F8;
+  --state-black-dot: #E8EAED;
+}
+
+body {
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  font-family: 'Inter', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
