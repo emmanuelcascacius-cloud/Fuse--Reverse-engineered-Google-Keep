@@ -17,8 +17,8 @@ This roadmap decomposes [`specs.md`](file:///workspaces/fuse/specs.md) and [`des
 | **07** | [Zero-Friction `<QuickCaptureBar />` & Shared-Element `<NoteModal />` with Auto-Save](#issue-07-zero-friction-quickcapturebar--shared-element-notemodal-with-auto-save) | Core UI Components | ✅ Completed |
 | **08** | [Priority State `<ColorStatePicker />` (Red, Blue, Black Primary Ordering)](#issue-08-priority-state-colorstatepicker-red-blue-black-primary-ordering) | Core UI Components | ✅ Completed |
 | **09** | [Labels System, Dynamic `<SidebarNav />` Drawer & Inline `#label` Autocomplete](#issue-09-labels-system-dynamic-sidebarnav--drawer--inline-label-autocomplete) | Core UI & Navigation | ✅ Completed |
-| **10** | [Multi-Select Batch Actions & Global Keyboard Navigation (`c`, `/`, `j`, `k`, `e`, `#`, `p`)](#issue-10-multi-select-batch-actions--global-keyboard-navigation-c--j-k-e--p) | Interactions & Accessibility | 🔄 In Progress |
-| **11** | [Instant Client-Side Search Highlighting & Multi-Facet Filter Bar](#issue-11-instant-client-side-search-highlighting--multi-facet-filter-bar) | Search & Discovery | ⏳ Pending |
+| **10** | [Multi-Select Batch Actions & Global Keyboard Navigation (`c`, `/`, `j`, `k`, `e`, `#`, `p`)](#issue-10-multi-select-batch-actions--global-keyboard-navigation-c--j-k-e--p) | Interactions & Accessibility | ✅ Completed |
+| **11** | [Instant Client-Side Search Highlighting & Multi-Facet Filter Bar](#issue-11-instant-client-side-search-highlighting--multi-facet-filter-bar) | Search & Discovery | 🔄 In Progress |
 | **12** | [Backend Delta Sync (`/api/v1/sync` LWW) & Domain Context REST API](#issue-12-backend-delta-sync-apiv1sync-lww--domain-context-rest-api) | Backend API | ⏳ Pending |
 | **13** | [Chrome Extension Manifest V3 Web Clipper & Active URL Listener](#issue-13-chrome-extension-manifest-v3-web-clipper--active-url-listener) | Chrome Extension | ⏳ Pending |
 | **14** | [Chrome Extension Shadow DOM Proactive Overlay (`<ContextualNoteOverlay />`)](#issue-14-chrome-extension-shadow-dom-proactive-overlay-contextualnoteoverlay) | Chrome Extension | ⏳ Pending |
