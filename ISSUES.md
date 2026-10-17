@@ -14,8 +14,8 @@ This roadmap decomposes [`specs.md`](file:///workspaces/fuse/specs.md) and [`des
 | **04** | [IndexedDB Local-First Engine (`Dexie.js`) & Offline `sync_outbox` Mutation Store](#issue-04-indexeddb-local-first-engine-dexiejs--offline-sync_outbox-mutation-store) | Client Storage & State | ✅ Completed |
 | **05** | [Dynamic Typography Scaling Engine & Rectangular `<NoteCard />` Component](#issue-05-dynamic-typography-scaling-engine--rectangular-notecard--component) | Core UI Components | ✅ Completed |
 | **06** | [Greedy Bin-Packing `<MasonryGrid />` & Pinned/Others Section Layout](#issue-06-greedy-bin-packing-masonrygrid--pinnedothers-section-layout) | Core UI Components | ✅ Completed |
-| **07** | [Zero-Friction `<QuickCaptureBar />` & Shared-Element `<NoteModal />` with Auto-Save](#issue-07-zero-friction-quickcapturebar--shared-element-notemodal-with-auto-save) | Core UI Components | 🔄 In Progress |
-| **08** | [Priority State `<ColorStatePicker />` (Red, Blue, Black Primary Ordering)](#issue-08-priority-state-colorstatepicker-red-blue-black-primary-ordering) | Core UI Components | ⏳ Pending |
+| **07** | [Zero-Friction `<QuickCaptureBar />` & Shared-Element `<NoteModal />` with Auto-Save](#issue-07-zero-friction-quickcapturebar--shared-element-notemodal-with-auto-save) | Core UI Components | ✅ Completed |
+| **08** | [Priority State `<ColorStatePicker />` (Red, Blue, Black Primary Ordering)](#issue-08-priority-state-colorstatepicker-red-blue-black-primary-ordering) | Core UI Components | 🔄 In Progress |
 | **09** | [Labels System, Dynamic `<SidebarNav />` Drawer & Inline `#label` Autocomplete](#issue-09-labels-system-dynamic-sidebarnav--drawer--inline-label-autocomplete) | Core UI & Navigation | ⏳ Pending |
 | **10** | [Multi-Select Batch Actions & Global Keyboard Navigation (`c`, `/`, `j`, `k`, `e`, `#`, `p`)](#issue-10-multi-select-batch-actions--global-keyboard-navigation-c--j-k-e--p) | Interactions & Accessibility | ⏳ Pending |
 | **11** | [Instant Client-Side Search Highlighting & Multi-Facet Filter Bar](#issue-11-instant-client-side-search-highlighting--multi-facet-filter-bar) | Search & Discovery | ⏳ Pending |
