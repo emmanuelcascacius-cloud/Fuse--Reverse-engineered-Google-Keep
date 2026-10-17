@@ -1,0 +1,10 @@
+{
+  "name": "My Cloud Workspace",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "Google.google-antigravity"
+      ]
+    }
+  }
+}
