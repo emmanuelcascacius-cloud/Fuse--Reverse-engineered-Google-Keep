@@ -128,10 +128,11 @@ export function NoteCard({
               <span className="truncate">{note.source_domain}</span>
             </span>
           )}
+          {/* User Labels (Google Keep aesthetic: clean pill with black outline for high contrast on color) */}
           {note.labels?.map((label) => (
             <span
               key={label}
-              className="inline-block max-w-[160px] truncate px-2.5 py-0.5 rounded-[12px] bg-black/[0.06] dark:bg-white/[0.08] text-text-primary text-[12px] font-normal leading-[16px] border border-border-hairline/40"
+              className="inline-block max-w-[160px] truncate px-2.5 py-0.5 rounded-[12px] bg-black/[0.05] text-text-primary text-[12px] font-medium leading-[16px] border border-black/50"
             >
               {label}
             </span>

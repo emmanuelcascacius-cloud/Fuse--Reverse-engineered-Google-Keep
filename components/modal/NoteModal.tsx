@@ -260,13 +260,13 @@ export function NoteModal({
             </div>
           )}
 
-          {/* Attached Labels Chips (Google Keep aesthetic: clean rounded pill, no hash, no X) */}
+          {/* Attached Labels Chips (Google Keep aesthetic: clean rounded pill, no hash, no X, black outline for high contrast on color) */}
           {labels.length > 0 && (
             <div className="flex flex-wrap gap-2 pt-1">
               {labels.map((lbl) => (
                 <span
                   key={lbl}
-                  className="inline-flex items-center px-3 py-1 rounded-[14px] bg-black/[0.06] dark:bg-white/[0.08] text-text-primary text-[12px] font-normal leading-[16px] border border-border-hairline/40 select-none"
+                  className="inline-flex items-center px-3 py-1 rounded-[14px] bg-black/[0.05] text-text-primary text-[12px] font-medium leading-[16px] border border-black/50 select-none"
                 >
                   {lbl}
                 </span>

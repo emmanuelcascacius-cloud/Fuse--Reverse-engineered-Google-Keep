@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNotesStore } from '@/lib/store/useNotesStore';
 import { useSelectionStore } from '@/lib/store/useSelectionStore';
-import { useTheme } from '@/components/theme/ThemeProvider';
 import { useGlobalShortcuts } from '@/hooks/useGlobalShortcuts';
 import { filterNotes } from '@/lib/search/search-engine';
 import { QuickCaptureBar } from '@/components/capture/QuickCaptureBar';
@@ -17,16 +16,12 @@ import type { LocalNote } from '@/lib/db/indexeddb';
 import type { NoteColorId } from '@/lib/constants/colors';
 import {
   Menu,
-  Moon,
-  Sun,
   LayoutGrid,
   List,
   Undo2,
 } from 'lucide-react';
 
 export default function FuseApp() {
-  const { resolvedTheme, toggleTheme } = useTheme();
-
   // Stores
   const {
     notes,
@@ -202,19 +197,6 @@ export default function FuseApp() {
               <LayoutGrid className="w-5 h-5 stroke-[1.75]" />
             ) : (
               <List className="w-5 h-5 stroke-[1.75]" />
-            )}
-          </button>
-
-          <button
-            type="button"
-            aria-label="Toggle dark mode"
-            className="w-10 h-10 rounded-full flex items-center justify-center text-icon-default hover:text-text-primary hover:bg-icon-hover-bg transition-colors cursor-pointer"
-            onClick={toggleTheme}
-          >
-            {resolvedTheme === 'dark' ? (
-              <Sun className="w-5 h-5 stroke-[1.75]" />
-            ) : (
-              <Moon className="w-5 h-5 stroke-[1.75]" />
             )}
           </button>
         </div>

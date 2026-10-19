@@ -307,23 +307,15 @@ export function QuickCaptureBar({
             </div>
           )}
 
-          {/* Attached Labels Chips */}
+          {/* Attached Labels Chips (Google Keep aesthetic: clean rounded pill, no hash, no X, black outline for high contrast on color) */}
           {labels.length > 0 && (
             <div className="flex flex-wrap gap-1.5 pt-1">
               {labels.map((lbl) => (
                 <span
                   key={lbl}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[12px] bg-canvas/60 text-text-secondary text-[11px] font-medium border border-border-hairline/60"
+                  className="inline-flex items-center px-2.5 py-0.5 rounded-[12px] bg-black/[0.05] text-text-primary text-[12px] font-medium leading-[16px] border border-black/50 select-none"
                 >
-                  <span>#{lbl}</span>
-                  <button
-                    type="button"
-                    aria-label={`Remove label ${lbl}`}
-                    className="hover:text-text-primary cursor-pointer"
-                    onClick={() => toggleLabel(lbl)}
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
+                  {lbl}
                 </span>
               ))}
             </div>
