@@ -69,25 +69,20 @@ describe('Rectangular NoteCard Component (Issue 05)', () => {
     expect(screen.getByText('#urgent')).toBeInTheDocument();
   });
 
-  it('triggers pin, archive, and trash callbacks', () => {
+  it('triggers pin and trash callbacks', () => {
     const onPin = vi.fn();
-    const onArchive = vi.fn();
     const onTrash = vi.fn();
 
     render(
       <NoteCard
         note={baseNote}
         onPin={onPin}
-        onArchive={onArchive}
         onTrash={onTrash}
       />
     );
 
     fireEvent.click(screen.getByLabelText('Pin note'));
     expect(onPin).toHaveBeenCalledWith('note-123', true);
-
-    fireEvent.click(screen.getByLabelText('Archive note'));
-    expect(onArchive).toHaveBeenCalledWith('note-123', true);
 
     fireEvent.click(screen.getByLabelText('Delete note'));
     expect(onTrash).toHaveBeenCalledWith('note-123');

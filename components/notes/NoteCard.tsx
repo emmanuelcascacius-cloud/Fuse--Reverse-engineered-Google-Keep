@@ -10,7 +10,6 @@ import {
   Pin,
   Palette,
   Tag,
-  Archive,
   Trash2,
   Check,
   Globe,
@@ -36,7 +35,7 @@ export function NoteCard({
   onSelect,
   onClick,
   onPin,
-  onArchive,
+  onArchive: _onArchive,
   onTrash,
   onColorChange,
   onToggleChecklistItem,
@@ -170,18 +169,7 @@ export function NoteCard({
             <Tag className="w-[18px] h-[18px] stroke-[1.75]" />
           </button>
 
-          {/* Archive Button */}
-          <button
-            type="button"
-            aria-label={note.is_archived ? 'Unarchive note' : 'Archive note'}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-icon-default hover:text-text-primary hover:bg-icon-hover-bg transition-colors cursor-pointer"
-            onClick={(e) => {
-              e.stopPropagation();
-              onArchive?.(note.id, !note.is_archived);
-            }}
-          >
-            <Archive className="w-[18px] h-[18px] stroke-[1.75]" />
-          </button>
+
 
           {/* Trash Button */}
           <button

@@ -91,22 +91,7 @@ describe('Full-System Integration & E2E User Journey (Issue 15)', () => {
       expect(screen.getByText('Buy organic coffee beans and oat milk')).toBeInTheDocument();
     });
 
-    // 2. Search filtering
-    const searchInput = screen.getByTestId('search-input');
-    fireEvent.change(searchInput, { target: { value: 'coffee' } });
-
-    // The note matches and stays visible
-    expect(screen.getByText(/coffee/i)).toBeInTheDocument();
-
-    // Change search query to non-matching term
-    fireEvent.change(searchInput, { target: { value: 'nonexistenttermxyz' } });
-    expect(screen.queryByText(/coffee/i)).not.toBeInTheDocument();
-
-    // Clear search
-    fireEvent.change(searchInput, { target: { value: '' } });
-    expect(screen.getByText('Buy organic coffee beans and oat milk')).toBeInTheDocument();
-
-    // 3. Trash & Undo Toast
+    // 2. Trash & Undo Toast
     const noteCard = screen.getByTestId('note-card');
     const deleteBtn = noteCard.querySelector('[aria-label="Delete note"]') || screen.getByLabelText('Delete note');
     fireEvent.click(deleteBtn);
@@ -160,23 +145,26 @@ describe('Full-System Integration & E2E User Journey (Issue 15)', () => {
     });
   });
 
-  it('opens keyboard shortcuts modal when help icon is clicked', async () => {
+  it('opens 3-dots menu and Google Keep style label popover in quick capture', async () => {
     renderApp();
 
-    const helpBtn = screen.getByLabelText('Keyboard shortcuts');
-    fireEvent.click(helpBtn);
+    // Expand quick capture
+    fireEvent.click(screen.getByText('Take a note...'));
 
-    expect(screen.getByText('Keyboard shortcuts')).toBeInTheDocument();
-    expect(screen.getByText('c')).toBeInTheDocument();
-    expect(screen.getByText('Create a new note')).toBeInTheDocument();
+    // Click 3 dots more button
+    const moreBtn = screen.getByLabelText('More options');
+    fireEvent.click(moreBtn);
 
-    // Close shortcuts modal
-    const closeBtn = screen.getByLabelText('Close');
-    fireEvent.click(closeBtn);
+    // Verify Add label and Add URL options appear
+    expect(screen.getByText('Add label')).toBeInTheDocument();
+    expect(screen.getByText('Add URL')).toBeInTheDocument();
 
-    await waitFor(() => {
-      expect(screen.queryByText('Keyboard shortcuts')).not.toBeInTheDocument();
-    });
+    // Click Add label
+    fireEvent.click(screen.getByText('Add label'));
+
+    // Label popover appears with input
+    expect(screen.getByText('Label note')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Enter label name')).toBeInTheDocument();
   });
 
   it('simulates offline queue mutation and server delta resolution', async () => {

@@ -1,10 +1,20 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { CheckSquare, Palette, Tag, Check } from 'lucide-react';
+import {
+  CheckSquare,
+  Palette,
+  Check,
+  MoreVertical,
+  Tag,
+  Link as LinkIcon,
+  X,
+} from 'lucide-react';
 import type { NoteColorId } from '@/lib/constants/colors';
 import { getNoteColorClasses } from '@/lib/constants/colors';
 import { useTheme } from '@/components/theme/ThemeProvider';
+import { ColorStatePicker } from '@/components/palette/ColorStatePicker';
+import { NoteLabelPopover } from '@/components/labels/NoteLabelPopover';
 import type { ChecklistItem } from '@/lib/db/schema';
 import { generateUUID } from '@/lib/db/notes-repo';
 
@@ -20,12 +30,16 @@ interface QuickCaptureBarProps {
   onOpenColorPicker?: (e: React.MouseEvent) => void;
   selectedColor?: NoteColorId;
   onColorChange?: (color: NoteColorId) => void;
+  availableLabels?: string[];
+  onCreateLabel?: (name: string) => void;
 }
 
 export function QuickCaptureBar({
   onSaveNote,
   selectedColor = 'chalk',
   onColorChange,
+  availableLabels = ['work', 'personal', 'urgent'],
+  onCreateLabel,
 }: QuickCaptureBarProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [bodyText, setBodyText] = useState('');
@@ -34,6 +48,12 @@ export function QuickCaptureBar({
   const [newItemText, setNewItemText] = useState('');
   const [color, setColor] = useState<NoteColorId>(selectedColor);
   const [labels, setLabels] = useState<string[]>([]);
+
+  // Popover state
+  const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
+  const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
+  const [isLabelPopoverOpen, setIsLabelPopoverOpen] = useState(false);
+  const [showUrlNotice, setShowUrlNotice] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -88,6 +108,10 @@ export function QuickCaptureBar({
     setNewItemText('');
     setColor('chalk');
     setLabels([]);
+    setIsColorPickerOpen(false);
+    setIsMoreMenuOpen(false);
+    setIsLabelPopoverOpen(false);
+    setShowUrlNotice(false);
     setIsExpanded(false);
   }, [bodyText, checklistItems, newItemText, isChecklist, color, labels, onSaveNote]);
 
@@ -103,6 +127,18 @@ export function QuickCaptureBar({
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
+        if (isColorPickerOpen) {
+          setIsColorPickerOpen(false);
+          return;
+        }
+        if (isMoreMenuOpen) {
+          setIsMoreMenuOpen(false);
+          return;
+        }
+        if (isLabelPopoverOpen) {
+          setIsLabelPopoverOpen(false);
+          return;
+        }
         handleSaveAndReset();
       }
     };
@@ -113,7 +149,7 @@ export function QuickCaptureBar({
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isExpanded, handleSaveAndReset]);
+  }, [isExpanded, isColorPickerOpen, isMoreMenuOpen, isLabelPopoverOpen, handleSaveAndReset]);
 
   // Convert freeform text <-> checklist
   const toggleChecklistMode = () => {
@@ -150,6 +186,19 @@ export function QuickCaptureBar({
     setChecklistItems((items) =>
       items.map((i) => (i.id === id ? { ...i, checked: !i.checked } : i))
     );
+  };
+
+  const toggleLabel = (labelName: string) => {
+    setLabels((prev) =>
+      prev.includes(labelName)
+        ? prev.filter((l) => l !== labelName)
+        : [...prev, labelName]
+    );
+  };
+
+  const createAndAttachLabel = (name: string) => {
+    onCreateLabel?.(name);
+    setLabels((prev) => (prev.includes(name) ? prev : [...prev, name]));
   };
 
   return (
@@ -258,22 +307,72 @@ export function QuickCaptureBar({
             </div>
           )}
 
-          {/* Bottom Toolbar */}
-          <div className="flex items-center justify-between pt-2">
-            <div className="flex items-center gap-1">
-              {/* Color Button */}
+          {/* Attached Labels Chips */}
+          {labels.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 pt-1">
+              {labels.map((lbl) => (
+                <span
+                  key={lbl}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[12px] bg-canvas/60 text-text-secondary text-[11px] font-medium border border-border-hairline/60"
+                >
+                  <span>#{lbl}</span>
+                  <button
+                    type="button"
+                    aria-label={`Remove label ${lbl}`}
+                    className="hover:text-text-primary cursor-pointer"
+                    onClick={() => toggleLabel(lbl)}
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Dummy URL notice */}
+          {showUrlNotice && (
+            <div className="px-3 py-1.5 rounded-[6px] bg-icon-hover-bg text-text-secondary text-[12px] flex items-center justify-between">
+              <span className="flex items-center gap-1.5">
+                <LinkIcon className="w-3.5 h-3.5" /> URL matching scope: Domain level
+              </span>
               <button
                 type="button"
-                aria-label="Color palette"
-                className="w-8 h-8 rounded-full flex items-center justify-center text-icon-default hover:text-text-primary hover:bg-icon-hover-bg transition-colors cursor-pointer"
-                onClick={() => {
-                  const nextColor = color === 'chalk' ? 'coral' : color === 'coral' ? 'storm' : color === 'storm' ? 'clay' : 'chalk';
-                  setColor(nextColor);
-                  onColorChange?.(nextColor);
-                }}
+                className="hover:text-text-primary"
+                onClick={() => setShowUrlNotice(false)}
               >
-                <Palette className="w-[18px] h-[18px] stroke-[1.75]" />
+                <X className="w-3.5 h-3.5" />
               </button>
+            </div>
+          )}
+
+          {/* Bottom Toolbar */}
+          <div className="flex items-center justify-between pt-2 relative">
+            <div className="flex items-center gap-1">
+              {/* Color Button with full 12-color picker popover */}
+              <div className="relative">
+                <button
+                  type="button"
+                  aria-label="Color palette"
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-icon-default hover:text-text-primary hover:bg-icon-hover-bg transition-colors cursor-pointer"
+                  onClick={() => setIsColorPickerOpen(!isColorPickerOpen)}
+                >
+                  <Palette className="w-[18px] h-[18px] stroke-[1.75]" />
+                </button>
+
+                {isColorPickerOpen && (
+                  <div className="absolute bottom-10 left-0 z-50">
+                    <ColorStatePicker
+                      selectedColor={color}
+                      onSelectColor={(c) => {
+                        setColor(c);
+                        setIsColorPickerOpen(false);
+                        onColorChange?.(c);
+                      }}
+                      onClose={() => setIsColorPickerOpen(false)}
+                    />
+                  </div>
+                )}
+              </div>
 
               {/* Checklist Toggle — Kept in bottom toolbar */}
               <button
@@ -287,20 +386,63 @@ export function QuickCaptureBar({
                 <CheckSquare className="w-[18px] h-[18px] stroke-[1.75]" />
               </button>
 
-              {/* Label Button */}
-              <button
-                type="button"
-                aria-label="Add label"
-                className="w-8 h-8 rounded-full flex items-center justify-center text-icon-default hover:text-text-primary hover:bg-icon-hover-bg transition-colors cursor-pointer"
-                onClick={() => {
-                  const label = prompt('Add label name:');
-                  if (label && label.trim().length > 0) {
-                    setLabels([...labels, label.trim().replace(/^#/, '')]);
-                  }
-                }}
-              >
-                <Tag className="w-[18px] h-[18px] stroke-[1.75]" />
-              </button>
+              {/* 3 Dots More Button (Google Keep style) */}
+              <div className="relative">
+                <button
+                  type="button"
+                  aria-label="More options"
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-icon-default hover:text-text-primary hover:bg-icon-hover-bg transition-colors cursor-pointer"
+                  onClick={() => {
+                    setIsMoreMenuOpen(!isMoreMenuOpen);
+                    setIsLabelPopoverOpen(false);
+                  }}
+                >
+                  <MoreVertical className="w-[18px] h-[18px] stroke-[1.75]" />
+                </button>
+
+                {/* 3 Dots Menu */}
+                {isMoreMenuOpen && (
+                  <div
+                    className="absolute bottom-10 left-0 z-50 w-40 bg-canvas rounded-[8px] border border-border-hairline shadow-xl py-1 select-none animate-in fade-in zoom-in-95 duration-100"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <button
+                      type="button"
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-text-primary hover:bg-icon-hover-bg text-left transition-colors cursor-pointer"
+                      onClick={() => {
+                        setIsMoreMenuOpen(false);
+                        setIsLabelPopoverOpen(true);
+                      }}
+                    >
+                      <Tag className="w-4 h-4 text-icon-default" />
+                      <span>Add label</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-text-primary hover:bg-icon-hover-bg text-left transition-colors cursor-pointer"
+                      onClick={() => {
+                        setIsMoreMenuOpen(false);
+                        setShowUrlNotice(true);
+                      }}
+                    >
+                      <LinkIcon className="w-4 h-4 text-icon-default" />
+                      <span>Add URL</span>
+                    </button>
+                  </div>
+                )}
+
+                {/* In-context Google Keep Label Popover */}
+                <NoteLabelPopover
+                  isOpen={isLabelPopoverOpen}
+                  onClose={() => setIsLabelPopoverOpen(false)}
+                  selectedLabels={labels}
+                  availableLabels={availableLabels}
+                  onToggleLabel={toggleLabel}
+                  onCreateLabel={createAndAttachLabel}
+                  anchorClassName="bottom-10 left-0"
+                />
+              </div>
             </div>
 
             {/* Close Button (commits implicit auto-save) */}

@@ -10,7 +10,6 @@ import { QuickCaptureBar } from '@/components/capture/QuickCaptureBar';
 import { MasonryGrid } from '@/components/grid/MasonryGrid';
 import { NoteModal } from '@/components/modal/NoteModal';
 import { SidebarNav, type NavView } from '@/components/sidebar/SidebarNav';
-import { SearchBar } from '@/components/search/SearchBar';
 import { BatchActionBar } from '@/components/toolbar/BatchActionBar';
 import { EditLabelsModal } from '@/components/labels/EditLabelsModal';
 import { ShortcutsModal } from '@/components/modal/ShortcutsModal';
@@ -22,7 +21,6 @@ import {
   Sun,
   LayoutGrid,
   List,
-  HelpCircle,
   Undo2,
 } from 'lucide-react';
 
@@ -71,7 +69,7 @@ export default function FuseApp() {
   ]);
 
   // Search & Filters state
-  const [filters, setFilters] = useState<{
+  const [filters] = useState<{
     query?: string;
     color?: NoteColorId | null;
     label?: string | null;
@@ -90,15 +88,6 @@ export default function FuseApp() {
     if (currentView === 'trash') return trashedNotes;
     return notes;
   }, [currentView, notes, archivedNotes, trashedNotes]);
-
-  // Extract all active domains for filter chips
-  const availableDomains = useMemo(() => {
-    const set = new Set<string>();
-    notes.forEach((n) => {
-      if (n.source_domain) set.add(n.source_domain);
-    });
-    return Array.from(set);
-  }, [notes]);
 
   // Filter notes by search query, facet filters, or sidebar label
   const displayedNotes = useMemo(() => {
@@ -189,7 +178,7 @@ export default function FuseApp() {
     <div className="min-h-screen flex flex-col bg-canvas text-text-primary antialiased">
       {/* 1. App Header */}
       <header className="h-16 px-4 border-b border-border-hairline flex items-center justify-between sticky top-0 z-30 bg-header backdrop-blur-md">
-        {/* Left: Hamburger & Brand */}
+        {/* Left: Hamburger Menu */}
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -199,27 +188,9 @@ export default function FuseApp() {
           >
             <Menu className="w-5 h-5 stroke-[2]" />
           </button>
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-[6px] bg-[#D93025] flex items-center justify-center text-white font-bold text-[14px]">
-              F
-            </div>
-            <span className="text-[20px] font-normal tracking-tight text-text-primary">
-              Fuse
-            </span>
-          </div>
         </div>
 
-        {/* Center: Search Bar */}
-        <div className="flex-1 max-w-2xl px-4">
-          <SearchBar
-            filters={filters}
-            onFilterChange={setFilters}
-            availableLabels={labels}
-            availableDomains={availableDomains}
-          />
-        </div>
-
-        {/* Right: Actions (Theme, View Toggle, Help) */}
+        {/* Right: Actions (View Toggle, Theme Toggle) */}
         <div className="flex items-center gap-1">
           <button
             type="button"
@@ -245,15 +216,6 @@ export default function FuseApp() {
             ) : (
               <Moon className="w-5 h-5 stroke-[1.75]" />
             )}
-          </button>
-
-          <button
-            type="button"
-            aria-label="Keyboard shortcuts"
-            className="w-10 h-10 rounded-full flex items-center justify-center text-icon-default hover:text-text-primary hover:bg-icon-hover-bg transition-colors cursor-pointer"
-            onClick={() => setIsShortcutsOpen(true)}
-          >
-            <HelpCircle className="w-5 h-5 stroke-[1.75]" />
           </button>
         </div>
       </header>
@@ -285,6 +247,8 @@ export default function FuseApp() {
               onSaveNote={async (noteData) => {
                 await createNote(noteData);
               }}
+              availableLabels={labels}
+              onCreateLabel={(name) => setLabels((l) => [...l, name])}
             />
           )}
 
@@ -307,8 +271,13 @@ export default function FuseApp() {
             onArchive={async (id, arc) => archiveNote(id, arc)}
             onTrash={async (id) => trashNote(id)}
             onColorChange={(id) => {
+              const allColorIds: NoteColorId[] = [
+                'coral', 'storm', 'clay', 'chalk', 'peach', 'sand',
+                'mint', 'sage', 'fog', 'dusk', 'blossom', 'earth'
+              ];
               const current = notes.find((n) => n.id === id);
-              const next = current?.color === 'chalk' ? 'coral' : current?.color === 'coral' ? 'storm' : 'chalk';
+              const currentIndex = allColorIds.indexOf(current?.color || 'chalk');
+              const next = allColorIds[(currentIndex + 1) % allColorIds.length];
               updateNote(id, { color: next });
             }}
             onToggleChecklistItem={async (noteId, itemId, checked) => {
@@ -348,9 +317,8 @@ export default function FuseApp() {
         onTrash={async (id) => {
           await trashNote(id);
         }}
-        onArchive={async (id, arc) => {
-          await archiveNote(id, arc);
-        }}
+        availableLabels={labels}
+        onCreateLabel={(name) => setLabels((l) => [...l, name])}
       />
 
       {/* 5. Edit Labels Modal */}

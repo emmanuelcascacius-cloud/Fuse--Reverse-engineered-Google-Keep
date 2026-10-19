@@ -54,7 +54,7 @@ export function EditLabelsModal({
         className="w-full max-w-[340px] rounded-[8px] bg-canvas border border-border-hairline shadow-2xl flex flex-col overflow-hidden select-none"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-4 pb-2 border-b border-border-hairline/60 flex items-center justify-between">
+        <div className="p-4 pb-2 flex items-center justify-between">
           <h2 className="text-[16px] font-medium text-text-primary">Edit labels</h2>
           <button
             type="button"
