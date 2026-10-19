@@ -9,7 +9,6 @@ import { useTheme } from '@/components/theme/ThemeProvider';
 import {
   Pin,
   Palette,
-  Tag,
   Trash2,
   Check,
   Globe,
@@ -132,9 +131,9 @@ export function NoteCard({
           {note.labels?.map((label) => (
             <span
               key={label}
-              className="inline-block max-w-[160px] truncate px-2 py-0.5 rounded-[12px] bg-canvas/60 text-text-secondary text-[11px] font-medium leading-[16px] border border-border-hairline/60"
+              className="inline-block max-w-[160px] truncate px-2.5 py-0.5 rounded-[12px] bg-black/[0.06] dark:bg-white/[0.08] text-text-primary text-[12px] font-normal leading-[16px] border border-border-hairline/40"
             >
-              #{label}
+              {label}
             </span>
           ))}
         </div>
@@ -154,19 +153,6 @@ export function NoteCard({
             }}
           >
             <Palette className="w-[18px] h-[18px] stroke-[1.75]" />
-          </button>
-
-          {/* Label Button */}
-          <button
-            type="button"
-            aria-label="Add or edit labels"
-            className="w-8 h-8 rounded-full flex items-center justify-center text-icon-default hover:text-text-primary hover:bg-icon-hover-bg transition-colors cursor-pointer"
-            onClick={(e) => {
-              e.stopPropagation();
-              onClick?.(note);
-            }}
-          >
-            <Tag className="w-[18px] h-[18px] stroke-[1.75]" />
           </button>
 
 

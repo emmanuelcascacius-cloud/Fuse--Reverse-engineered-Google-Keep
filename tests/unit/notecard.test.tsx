@@ -65,8 +65,8 @@ describe('Rectangular NoteCard Component (Issue 05)', () => {
   it('renders domain chip and label tags', () => {
     render(<NoteCard note={baseNote} />);
     expect(screen.getByText('github.com')).toBeInTheDocument();
-    expect(screen.getByText('#bug')).toBeInTheDocument();
-    expect(screen.getByText('#urgent')).toBeInTheDocument();
+    expect(screen.getByText('bug')).toBeInTheDocument();
+    expect(screen.getByText('urgent')).toBeInTheDocument();
   });
 
   it('triggers pin and trash callbacks', () => {

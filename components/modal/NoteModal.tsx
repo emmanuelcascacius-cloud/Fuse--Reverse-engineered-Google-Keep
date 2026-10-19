@@ -50,6 +50,7 @@ export function NoteModal({
   const [isArchived, setIsArchived] = useState(false);
   const [labels, setLabels] = useState<string[]>([]);
   const [newItemText, setNewItemText] = useState('');
+  const [isClosing, setIsClosing] = useState(false);
 
   // Popover state
   const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
@@ -76,6 +77,7 @@ export function NoteModal({
       setIsArchived(note.is_archived);
       setLabels(note.labels || []);
       setNewItemText('');
+      setIsClosing(false);
       setIsColorPickerOpen(false);
       setIsMoreMenuOpen(false);
       setIsLabelPopoverOpen(false);
@@ -83,12 +85,14 @@ export function NoteModal({
     }
   }, [note]);
 
-  // Implicit auto-save on close
+  // Implicit auto-save on close with Google Keep compression physics
   const handleSaveAndClose = React.useCallback(async () => {
     if (!note) {
       onClose();
       return;
     }
+
+    setIsClosing(true);
 
     const finalItems = [...checklistItems];
     if (newItemText.trim().length > 0) {
@@ -114,7 +118,11 @@ export function NoteModal({
       labels,
     });
 
-    onClose();
+    // Wait for the smooth compression animation before unmounting
+    setTimeout(() => {
+      setIsClosing(false);
+      onClose();
+    }, 160);
   }, [note, checklistItems, newItemText, isChecklist, bodyText, onSave, color, isPinned, isArchived, labels, onClose]);
 
   // Keyboard Escape listener
@@ -165,12 +173,16 @@ export function NoteModal({
   return (
     <div
       data-testid="note-modal-backdrop"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-[1px] animate-fade-in"
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-[1px] transition-opacity duration-160 ${
+        isClosing ? 'opacity-0' : 'opacity-100 animate-in fade-in duration-140'
+      }`}
       onClick={handleSaveAndClose}
     >
       <div
         data-testid="note-modal-content"
-        className="w-full max-w-[600px] max-h-[85vh] rounded-[8px] border shadow-2xl flex flex-col overflow-hidden relative"
+        className={`w-full max-w-[600px] max-h-[85vh] rounded-[8px] border shadow-2xl flex flex-col relative transition-all ${
+          isClosing ? 'animate-keep-collapse' : 'animate-keep-expand'
+        }`}
         style={{
           backgroundColor: colorStyles.bg,
           borderColor: colorStyles.border,
@@ -192,7 +204,7 @@ export function NoteModal({
         </div>
 
         {/* Modal Scrollable Body (Strictly NO Title Input, scrollbar-none, NO white dividing lines) */}
-        <div className="p-6 pt-5 pb-4 flex-1 overflow-y-auto overflow-x-hidden scrollbar-none flex flex-col gap-3">
+        <div className="p-6 pt-5 pb-3 flex-1 overflow-y-auto overflow-x-hidden scrollbar-none flex flex-col gap-3">
           {/* Domain Chip if linked */}
           {note.source_domain && (
             <div className="flex items-center gap-1.5 text-text-muted text-[12px] font-medium">
@@ -248,23 +260,15 @@ export function NoteModal({
             </div>
           )}
 
-          {/* Attached Labels Chips with delete badge */}
+          {/* Attached Labels Chips (Google Keep aesthetic: clean rounded pill, no hash, no X) */}
           {labels.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 pt-2">
+            <div className="flex flex-wrap gap-2 pt-1">
               {labels.map((lbl) => (
                 <span
                   key={lbl}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[12px] bg-canvas/60 text-text-secondary text-[11px] font-medium border border-border-hairline/60"
+                  className="inline-flex items-center px-3 py-1 rounded-[14px] bg-black/[0.06] dark:bg-white/[0.08] text-text-primary text-[12px] font-normal leading-[16px] border border-border-hairline/40 select-none"
                 >
-                  <span>#{lbl}</span>
-                  <button
-                    type="button"
-                    aria-label={`Remove label ${lbl}`}
-                    className="hover:text-text-primary cursor-pointer"
-                    onClick={() => toggleLabel(lbl)}
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
+                  {lbl}
                 </span>
               ))}
             </div>
@@ -287,10 +291,10 @@ export function NoteModal({
           )}
         </div>
 
-        {/* Bottom Toolbar (NO white border-t line, NO archive) */}
-        <div className="px-4 py-2 flex items-center justify-between relative">
+        {/* Bottom Toolbar (NO white border-t line, NO archive, overflow-visible for clean popovers) */}
+        <div className="px-4 py-2 flex items-center justify-between relative overflow-visible z-20">
           <div className="flex items-center gap-1">
-            {/* Color Palette (opens full 12-color picker popover) */}
+            {/* Color Palette (opens full 12-color picker popover floating UPWARDS) */}
             <div className="relative">
               <button
                 type="button"
@@ -302,7 +306,7 @@ export function NoteModal({
               </button>
 
               {isColorPickerOpen && (
-                <div className="absolute bottom-10 left-0 z-50">
+                <div className="absolute bottom-full mb-2 left-0 z-50">
                   <ColorStatePicker
                     selectedColor={color}
                     onSelectColor={(c) => {
@@ -357,10 +361,10 @@ export function NoteModal({
                 <MoreVertical className="w-[18px] h-[18px] stroke-[1.75]" />
               </button>
 
-              {/* 3 Dots Menu */}
+              {/* 3 Dots Menu — Floating cleanly above toolbar */}
               {isMoreMenuOpen && (
                 <div
-                  className="absolute bottom-10 left-0 z-50 w-40 bg-canvas rounded-[8px] border border-border-hairline shadow-xl py-1 select-none animate-in fade-in zoom-in-95 duration-100"
+                  className="absolute bottom-full mb-2 left-0 z-50 w-44 bg-canvas rounded-[8px] border border-border-hairline shadow-2xl py-1 select-none animate-in fade-in zoom-in-95 duration-100"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <button
@@ -389,7 +393,7 @@ export function NoteModal({
                 </div>
               )}
 
-              {/* In-context Google Keep Label Popover */}
+              {/* In-context Google Keep Label Popover — Floating cleanly above toolbar, zero slopping */}
               <NoteLabelPopover
                 isOpen={isLabelPopoverOpen}
                 onClose={() => setIsLabelPopoverOpen(false)}
@@ -397,7 +401,7 @@ export function NoteModal({
                 availableLabels={availableLabels}
                 onToggleLabel={toggleLabel}
                 onCreateLabel={createAndAttachLabel}
-                anchorClassName="bottom-10 left-0"
+                anchorClassName="bottom-full mb-2 left-0"
               />
             </div>
 
