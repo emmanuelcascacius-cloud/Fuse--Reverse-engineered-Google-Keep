@@ -311,6 +311,18 @@ export default function FuseApp() {
               const next = current?.color === 'chalk' ? 'coral' : current?.color === 'coral' ? 'storm' : 'chalk';
               updateNote(id, { color: next });
             }}
+            onToggleChecklistItem={async (noteId, itemId, checked) => {
+              const targetNote = notes.find((n) => n.id === noteId);
+              if (targetNote && targetNote.checklist_items) {
+                const updatedItems = targetNote.checklist_items.map((i) =>
+                  i.id === itemId ? { ...i, checked } : i
+                );
+                await updateNote(noteId, {
+                  checklist_items: updatedItems,
+                  body: updatedItems.map((i) => i.text).join('\n'),
+                });
+              }
+            }}
           />
         </main>
       </div>

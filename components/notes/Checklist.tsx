@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import type { ChecklistItem } from '@/lib/db/schema';
-import { Check, ChevronDown, ChevronRight } from 'lucide-react';
+import { Check } from 'lucide-react';
 
 interface ChecklistProps {
   items: ChecklistItem[];
@@ -11,89 +11,48 @@ interface ChecklistProps {
 }
 
 export function Checklist({ items, onToggleItem, interactive = true }: ChecklistProps) {
-  const [showCompleted, setShowCompleted] = useState(false);
-
-  const activeItems = items.filter((item) => !item.checked);
-  const completedItems = items.filter((item) => item.checked);
+  if (items.length === 0) return null;
 
   return (
-    <div className="flex flex-col gap-1 w-full text-[14px] leading-[20px] font-body select-none">
-      {/* Active Items */}
-      {activeItems.map((item) => (
+    <div className="flex flex-col gap-1.5 w-full text-[14px] leading-[20px] font-body select-none">
+      {items.map((item) => (
         <div
           key={item.id}
-          className="flex items-start gap-2 py-0.5 group"
+          className="flex items-start gap-2.5 py-0.5 group cursor-pointer"
           onClick={(e) => {
             if (interactive && onToggleItem) {
               e.stopPropagation();
-              onToggleItem(item.id, true);
+              onToggleItem(item.id, !item.checked);
             }
           }}
         >
+          {/* Google Tasks style checkbox box */}
           <button
             type="button"
-            className="w-4 h-4 mt-0.5 rounded-[3px] border border-icon-default flex items-center justify-center hover:border-text-primary transition-colors cursor-pointer"
-            aria-label={`Mark "${item.text}" as completed`}
+            className={`w-[18px] h-[18px] mt-0.5 rounded-[4px] border flex items-center justify-center transition-colors cursor-pointer flex-shrink-0 ${
+              item.checked
+                ? 'bg-[#1A73E8] border-[#1A73E8] text-white'
+                : 'border-icon-default/80 hover:border-text-primary bg-transparent'
+            }`}
+            aria-label={item.checked ? `Unmark "${item.text}"` : `Mark "${item.text}" as completed`}
+            onClick={(e) => {
+              if (interactive && onToggleItem) {
+                e.stopPropagation();
+                onToggleItem(item.id, !item.checked);
+              }
+            }}
           >
-            {item.checked && <Check className="w-3 h-3 text-text-primary" />}
+            {item.checked && <Check className="w-3.5 h-3.5 stroke-[2.5]" />}
           </button>
-          <span className="flex-1 text-text-primary break-words whitespace-pre-wrap">
+          <span
+            className={`flex-1 break-words whitespace-pre-wrap transition-colors ${
+              item.checked ? 'text-text-secondary line-through' : 'text-text-primary'
+            }`}
+          >
             {item.text}
           </span>
         </div>
       ))}
-
-      {/* Completed Items Section */}
-      {completedItems.length > 0 && (
-        <div className="mt-2 pt-1 border-t border-border-hairline/50">
-          <button
-            type="button"
-            className="flex items-center gap-1.5 py-1 text-[12px] font-medium text-text-secondary hover:text-text-primary cursor-pointer transition-colors"
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowCompleted(!showCompleted);
-            }}
-          >
-            {showCompleted ? (
-              <ChevronDown className="w-3.5 h-3.5" />
-            ) : (
-              <ChevronRight className="w-3.5 h-3.5" />
-            )}
-            <span>
-              {completedItems.length} checked {completedItems.length === 1 ? 'item' : 'items'}
-            </span>
-          </button>
-
-          {showCompleted && (
-            <div className="flex flex-col gap-1 pl-1 mt-1">
-              {completedItems.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex items-start gap-2 py-0.5 group"
-                  onClick={(e) => {
-                    if (interactive && onToggleItem) {
-                      e.stopPropagation();
-                      onToggleItem(item.id, false);
-                    }
-                  }}
-                >
-                  <button
-                    type="button"
-                    className="w-4 h-4 mt-0.5 rounded-[3px] bg-icon-default/20 border border-icon-default flex items-center justify-center cursor-pointer"
-                    aria-label={`Unmark "${item.text}"`}
-                  >
-                    <Check className="w-3 h-3 text-text-secondary" />
-                  </button>
-                  <span className="flex-1 text-text-secondary line-through break-words whitespace-pre-wrap">
-                    {item.text}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
     </div>
   );
 }
-

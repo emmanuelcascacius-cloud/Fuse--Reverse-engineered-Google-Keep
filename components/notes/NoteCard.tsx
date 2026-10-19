@@ -59,7 +59,7 @@ export function NoteCard({
       data-testid="note-card"
       data-note-id={note.id}
       data-color={note.color}
-      className={`relative group rounded-[8px] transition-shadow duration-140 cursor-default select-none flex flex-col justify-between overflow-hidden border ${
+      className={`relative group rounded-[8px] transition-shadow duration-140 cursor-default select-none flex flex-col justify-between overflow-hidden overflow-x-hidden overflow-y-hidden scrollbar-none border ${
         isListView ? 'w-full max-w-[600px]' : 'w-[240px]'
       } min-h-[60px] max-h-[380px] hover:shadow-card-hover-light dark:hover:shadow-card-hover-dark`}
       style={{
@@ -101,7 +101,7 @@ export function NoteCard({
       </button>
 
       {/* Main Body Container (Strictly NO Title) */}
-      <div className="px-4 pt-3 pb-3 flex-1 flex flex-col">
+      <div className="px-4 pt-3 pb-3 flex-1 flex flex-col overflow-x-hidden overflow-y-hidden scrollbar-none">
         {note.is_checklist ? (
           <Checklist
             items={note.checklist_items || []}

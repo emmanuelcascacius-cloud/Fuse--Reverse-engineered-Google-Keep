@@ -148,8 +148,8 @@ export function NoteModal({
           </button>
         </div>
 
-        {/* Modal Scrollable Body (Strictly NO Title Input) */}
-        <div className="p-6 pt-5 pb-4 flex-1 overflow-y-auto flex flex-col gap-3">
+        {/* Modal Scrollable Body (Strictly NO Title Input, scrollbar-none) */}
+        <div className="p-6 pt-5 pb-4 flex-1 overflow-y-auto overflow-x-hidden scrollbar-none flex flex-col gap-3">
           {/* Domain Chip if linked */}
           {note.source_domain && (
             <div className="flex items-center gap-1.5 text-text-muted text-[12px] font-medium">
@@ -164,7 +164,7 @@ export function NoteModal({
               value={bodyText}
               onChange={(e) => setBodyText(e.target.value)}
               placeholder="Note..."
-              className="w-full bg-transparent resize-none text-[16px] leading-[24px] font-sans text-text-primary placeholder:text-text-secondary focus:outline-none min-h-[160px]"
+              className="w-full bg-transparent resize-none text-[16px] leading-[24px] font-sans text-text-primary placeholder:text-text-secondary focus:outline-none min-h-[160px] overflow-x-hidden scrollbar-none"
               autoFocus
             />
           ) : (
@@ -177,7 +177,8 @@ export function NoteModal({
                   );
                 }}
               />
-              <div className="flex items-center gap-2 pt-2 border-t border-border-hairline/40">
+              <div className="flex items-center gap-2.5 py-0.5">
+                <span className="w-[18px] h-[18px] rounded-[4px] border border-icon-default/40 flex-shrink-0" />
                 <input
                   type="text"
                   placeholder="List item..."

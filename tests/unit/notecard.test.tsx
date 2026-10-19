@@ -105,7 +105,7 @@ describe('Rectangular NoteCard Component (Issue 05)', () => {
 
     render(<NoteCard note={checklistNote} />);
     expect(screen.getByText('Step 1: First item')).toBeInTheDocument();
-    expect(screen.getByText(/1 checked item/i)).toBeInTheDocument();
+    expect(screen.getByText('Step 2: Completed item')).toBeInTheDocument();
   });
 });
 

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { CheckSquare, Pin, Palette, Tag, Archive } from 'lucide-react';
+import { CheckSquare, Palette, Tag, Check } from 'lucide-react';
 import type { NoteColorId } from '@/lib/constants/colors';
 import { getNoteColorClasses } from '@/lib/constants/colors';
 import { useTheme } from '@/components/theme/ThemeProvider';
@@ -32,7 +32,6 @@ export function QuickCaptureBar({
   const [isChecklist, setIsChecklist] = useState(false);
   const [checklistItems, setChecklistItems] = useState<ChecklistItem[]>([]);
   const [newItemText, setNewItemText] = useState('');
-  const [isPinned, setIsPinned] = useState(false);
   const [color, setColor] = useState<NoteColorId>(selectedColor);
   const [labels, setLabels] = useState<string[]>([]);
 
@@ -77,7 +76,7 @@ export function QuickCaptureBar({
         is_checklist: isChecklist,
         checklist_items: finalItems,
         color,
-        is_pinned: isPinned,
+        is_pinned: false,
         labels,
       });
     }
@@ -87,11 +86,10 @@ export function QuickCaptureBar({
     setIsChecklist(false);
     setChecklistItems([]);
     setNewItemText('');
-    setIsPinned(false);
     setColor('chalk');
     setLabels([]);
     setIsExpanded(false);
-  }, [bodyText, checklistItems, newItemText, isChecklist, color, isPinned, labels, onSaveNote]);
+  }, [bodyText, checklistItems, newItemText, isChecklist, color, labels, onSaveNote]);
 
   // Click-outside listener for implicit auto-save
   useEffect(() => {
@@ -148,6 +146,12 @@ export function QuickCaptureBar({
     setNewItemText('');
   };
 
+  const handleToggleCheckItem = (id: string) => {
+    setChecklistItems((items) =>
+      items.map((i) => (i.id === id ? { ...i, checked: !i.checked } : i))
+    );
+  };
+
   return (
     <div
       ref={containerRef}
@@ -159,9 +163,9 @@ export function QuickCaptureBar({
       }}
     >
       {!isExpanded ? (
-        /* Collapsed State: 46px height */
+        /* Collapsed State: 46px height with clean "Take a note..." */
         <div
-          className="h-[46px] px-4 flex items-center justify-between cursor-text"
+          className="h-[46px] px-4 flex items-center cursor-text"
           onClick={() => {
             setIsExpanded(true);
             setTimeout(() => textareaRef.current?.focus(), 50);
@@ -170,39 +174,11 @@ export function QuickCaptureBar({
           <span className="text-[15px] font-medium text-text-secondary">
             Take a note...
           </span>
-          <div className="flex items-center gap-1">
-            <button
-              type="button"
-              aria-label="New checklist note"
-              className="w-8 h-8 rounded-full flex items-center justify-center text-icon-default hover:text-text-primary hover:bg-icon-hover-bg transition-colors cursor-pointer"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsChecklist(true);
-                setIsExpanded(true);
-              }}
-            >
-              <CheckSquare className="w-5 h-5 stroke-[1.75]" />
-            </button>
-          </div>
         </div>
       ) : (
-        /* Expanded State: strictly NO title field */
-        <div className="flex flex-col p-4 pt-3 gap-3 max-h-[60vh] overflow-y-auto">
-          {/* Top Actions: Pin */}
-          <div className="flex justify-end items-center">
-            <button
-              type="button"
-              aria-label={isPinned ? 'Unpin note' : 'Pin note'}
-              className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer hover:bg-icon-hover-bg ${
-                isPinned ? 'text-text-primary' : 'text-icon-default'
-              }`}
-              onClick={() => setIsPinned(!isPinned)}
-            >
-              <Pin className={`w-4 h-4 ${isPinned ? 'fill-current' : ''}`} />
-            </button>
-          </div>
-
-          {/* Note Body or Checklist Items */}
+        /* Expanded State: strictly NO title field, NO top pin */
+        <div className="flex flex-col p-4 pt-3 gap-3 max-h-[60vh] overflow-y-auto scrollbar-none">
+          {/* Note Body or Google Tasks-Style Checklist */}
           {!isChecklist ? (
             <textarea
               ref={textareaRef}
@@ -210,14 +186,26 @@ export function QuickCaptureBar({
               placeholder="Take a note..."
               value={bodyText}
               onChange={(e) => setBodyText(e.target.value)}
-              className="w-full bg-transparent resize-none text-[15px] leading-[22px] font-sans text-text-primary placeholder:text-text-secondary focus:outline-none min-h-[90px]"
+              className="w-full bg-transparent resize-none text-[15px] leading-[22px] font-sans text-text-primary placeholder:text-text-secondary focus:outline-none min-h-[90px] overflow-x-hidden scrollbar-none"
               autoFocus
             />
           ) : (
             <div className="flex flex-col gap-2">
               {checklistItems.map((item, index) => (
-                <div key={item.id} className="flex items-center gap-2">
-                  <span className="w-4 h-4 rounded-[3px] border border-icon-default" />
+                <div key={item.id} className="flex items-center gap-2 py-0.5">
+                  {/* Google Tasks style clickable checkbox box */}
+                  <button
+                    type="button"
+                    aria-label={item.checked ? 'Mark item as incomplete' : 'Mark item as completed'}
+                    className={`w-[18px] h-[18px] rounded-[4px] border flex items-center justify-center transition-colors cursor-pointer flex-shrink-0 ${
+                      item.checked
+                        ? 'bg-[#1A73E8] border-[#1A73E8] text-white'
+                        : 'border-icon-default hover:border-text-primary bg-transparent'
+                    }`}
+                    onClick={() => handleToggleCheckItem(item.id)}
+                  >
+                    {item.checked && <Check className="w-3.5 h-3.5 stroke-[2.5]" />}
+                  </button>
                   <input
                     type="text"
                     value={item.text}
@@ -226,12 +214,33 @@ export function QuickCaptureBar({
                       updated[index].text = e.target.value;
                       setChecklistItems(updated);
                     }}
-                    className="flex-1 bg-transparent text-[14px] text-text-primary focus:outline-none"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const nextId = generateUUID();
+                        const updated = [...checklistItems];
+                        updated.splice(index + 1, 0, {
+                          id: nextId,
+                          text: '',
+                          checked: false,
+                          position: index + 2,
+                        });
+                        setChecklistItems(updated);
+                      } else if (e.key === 'Backspace' && item.text === '' && checklistItems.length > 1) {
+                        e.preventDefault();
+                        setChecklistItems(checklistItems.filter((_, i) => i !== index));
+                      }
+                    }}
+                    className={`flex-1 bg-transparent text-[14px] focus:outline-none transition-colors ${
+                      item.checked ? 'line-through text-text-secondary' : 'text-text-primary'
+                    }`}
                   />
                 </div>
               ))}
-              <div className="flex items-center gap-2 pt-1 border-t border-border-hairline/40">
-                <span className="w-4 h-4 rounded-[3px] border border-dashed border-icon-default" />
+
+              {/* Seamless new item input without separator line */}
+              <div className="flex items-center gap-2 py-0.5">
+                <span className="w-[18px] h-[18px] rounded-[4px] border border-icon-default/40 flex-shrink-0" />
                 <input
                   type="text"
                   placeholder="List item..."
@@ -266,7 +275,7 @@ export function QuickCaptureBar({
                 <Palette className="w-[18px] h-[18px] stroke-[1.75]" />
               </button>
 
-              {/* Checklist Toggle */}
+              {/* Checklist Toggle — Kept in bottom toolbar */}
               <button
                 type="button"
                 aria-label="Toggle checklist mode"
@@ -291,15 +300,6 @@ export function QuickCaptureBar({
                 }}
               >
                 <Tag className="w-[18px] h-[18px] stroke-[1.75]" />
-              </button>
-
-              {/* Archive Button */}
-              <button
-                type="button"
-                aria-label="Archive"
-                className="w-8 h-8 rounded-full flex items-center justify-center text-icon-default hover:text-text-primary hover:bg-icon-hover-bg transition-colors cursor-pointer"
-              >
-                <Archive className="w-[18px] h-[18px] stroke-[1.75]" />
               </button>
             </div>
 

@@ -4,7 +4,6 @@ import React from 'react';
 import {
   Lightbulb,
   Tag,
-  Archive,
   Trash2,
   Edit2,
 } from 'lucide-react';
@@ -31,7 +30,6 @@ export function SidebarNav({
   isOpen = true,
 }: SidebarNavProps) {
   const isNotesActive = currentView === 'notes' && selectedLabel === null;
-  const isArchiveActive = currentView === 'archive';
   const isTrashActive = currentView === 'trash';
 
   return (
@@ -95,23 +93,7 @@ export function SidebarNav({
           <span>Edit labels</span>
         </button>
 
-        {/* Archive Button */}
-        <button
-          type="button"
-          data-testid="nav-archive"
-          className={`flex items-center gap-4 px-4 py-2.5 rounded-r-full font-medium text-[14px] transition-colors cursor-pointer text-left ${
-            isArchiveActive
-              ? 'bg-sidebar-active text-text-primary font-semibold'
-              : 'text-text-primary hover:bg-icon-hover-bg'
-          }`}
-          onClick={() => {
-            onSelectView('archive');
-            onSelectLabel(null);
-          }}
-        >
-          <Archive className="w-5 h-5 flex-shrink-0 stroke-[1.75]" />
-          <span>Archive</span>
-        </button>
+
 
         {/* Trash Button */}
         <button

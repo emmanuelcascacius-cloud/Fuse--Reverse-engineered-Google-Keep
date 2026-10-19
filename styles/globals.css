@@ -56,3 +56,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Hide generic scrollbars while preserving touch/hand scrollability */
+.scrollbar-none {
+  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
