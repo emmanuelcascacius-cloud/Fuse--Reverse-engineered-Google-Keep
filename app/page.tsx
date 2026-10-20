@@ -77,6 +77,33 @@ export default function FuseApp() {
     fetchNotes();
   }, [fetchNotes]);
 
+  // Auto-sync any labels from existing notes into the sidebar labels list
+  useEffect(() => {
+    const allNotes = [...notes, ...archivedNotes, ...trashedNotes];
+    const noteLabels = new Set<string>();
+    for (const n of allNotes) {
+      if (n.labels && Array.isArray(n.labels)) {
+        for (const l of n.labels) {
+          const trimmed = l.trim();
+          if (trimmed) noteLabels.add(trimmed);
+        }
+      }
+    }
+    if (noteLabels.size > 0) {
+      setLabels((prev) => {
+        const combined = new Set(prev);
+        let added = false;
+        noteLabels.forEach((lbl) => {
+          if (!combined.has(lbl)) {
+            combined.add(lbl);
+            added = true;
+          }
+        });
+        return added ? Array.from(combined) : prev;
+      });
+    }
+  }, [notes, archivedNotes, trashedNotes]);
+
   // Determine active dataset according to current view
   const currentDataset = useMemo(() => {
     if (currentView === 'archive') return archivedNotes;
@@ -223,59 +250,195 @@ export default function FuseApp() {
         />
 
         {/* Notes Feed Canvas */}
-        <main className="flex-1 overflow-y-auto px-2 sm:px-4 pb-16">
-          {/* Quick Capture Bar (Only shown in active notes view) */}
-          {currentView === 'notes' && !selectedLabel && (
+        <main className="flex-1 overflow-y-auto px-2 sm:px-4 pb-16 flex flex-col">
+          {/* Quick Capture Bar (Shown on notes view and on every label view) */}
+          {currentView === 'notes' && (
             <QuickCaptureBar
+              key={selectedLabel || 'all-notes'}
+              defaultLabels={selectedLabel ? [selectedLabel] : []}
               onSaveNote={async (noteData) => {
-                await createNote(noteData);
+                const finalLabels =
+                  selectedLabel && !noteData.labels.includes(selectedLabel)
+                    ? [...noteData.labels, selectedLabel]
+                    : noteData.labels;
+
+                await createNote({
+                  ...noteData,
+                  labels: finalLabels,
+                });
+
+                if (finalLabels.length > 0) {
+                  setLabels((prev) => {
+                    const combined = new Set(prev);
+                    finalLabels.forEach((l) => combined.add(l));
+                    return Array.from(combined);
+                  });
+                }
               }}
               availableLabels={labels}
-              onCreateLabel={(name) => setLabels((l) => [...l, name])}
+              onCreateLabel={(name) => {
+                const trimmed = name.trim();
+                if (trimmed) {
+                  setLabels((l) => (l.includes(trimmed) ? l : [...l, trimmed]));
+                }
+              }}
             />
           )}
 
-          {/* Active Label or Filter Header */}
-          {selectedLabel && (
-            <div className="max-w-7xl mx-auto px-6 pt-4 pb-2 text-[14px] text-text-secondary flex items-center gap-2">
-              <span>Viewing label:</span>
-              <span className="font-semibold text-text-primary">#{selectedLabel}</span>
+          {/* Masonry / List Card Grid OR Google Keep Minimal Empty States */}
+          {displayedNotes.length > 0 ? (
+            <MasonryGrid
+              notes={displayedNotes}
+              isListView={isListView}
+              selectedIds={selectedIds}
+              onSelect={(id) => toggleSelect(id)}
+              onClickNote={(note) => setModalNote(note)}
+              onPin={async (id, pin) => pinNote(id, pin)}
+              onArchive={async (id, arc) => archiveNote(id, arc)}
+              onTrash={async (id) => trashNote(id)}
+              onColorChange={(id) => {
+                const allColorIds: NoteColorId[] = [
+                  'coral', 'storm', 'clay', 'chalk', 'peach', 'sand',
+                  'mint', 'sage', 'fog', 'dusk', 'blossom', 'earth'
+                ];
+                const current = notes.find((n) => n.id === id);
+                const currentIndex = allColorIds.indexOf(current?.color || 'chalk');
+                const next = allColorIds[(currentIndex + 1) % allColorIds.length];
+                updateNote(id, { color: next });
+              }}
+              onToggleChecklistItem={async (noteId, itemId, checked) => {
+                const targetNote = notes.find((n) => n.id === noteId);
+                if (targetNote && targetNote.checklist_items) {
+                  const updatedItems = targetNote.checklist_items.map((i) =>
+                    i.id === itemId ? { ...i, checked } : i
+                  );
+                  await updateNote(noteId, {
+                    checklist_items: updatedItems,
+                    body: updatedItems.map((i) => i.text).join('\n'),
+                  });
+                }
+              }}
+            />
+          ) : (
+            /* Google Keep Empty States (Centered beneath QuickCaptureBar) */
+            <div className="flex-1 flex flex-col items-center justify-center pt-20 pb-16 select-none text-center">
+              {currentView === 'notes' && selectedLabel ? (
+                /* Empty Label View: "No notes with this label yet" with Google Keep tag icon */
+                <div data-testid="empty-label-state" className="flex flex-col items-center gap-6">
+                  <svg
+                    className="w-28 h-20 text-[#c8c8c8]"
+                    viewBox="0 0 160 110"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M32 24H94L136 55L94 86H32C25.3726 86 20 80.6274 20 74V36C20 29.3726 25.3726 24 32 24Z"
+                      stroke="currentColor"
+                      strokeWidth="11"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <p className="text-[20px] sm:text-[22px] text-[#5f6368] font-normal font-sans">
+                    No notes with this label yet
+                  </p>
+                </div>
+              ) : currentView === 'notes' ? (
+                /* Empty Notes View: "Notes you add appear here" with Google Keep lightbulb icon */
+                <div data-testid="empty-notes-state" className="flex flex-col items-center gap-6">
+                  <svg
+                    className="w-24 h-32 text-[#dadce0]"
+                    viewBox="0 0 120 150"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M38 92V80C26.9543 72.8249 20 60.8354 20 48C20 25.9086 37.9086 8 60 8C82.0914 8 100 25.9086 100 48C100 60.8354 93.0457 72.8249 82 80V92"
+                      stroke="currentColor"
+                      strokeWidth="11"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M44 114H76"
+                      stroke="currentColor"
+                      strokeWidth="11"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  <p className="text-[20px] sm:text-[22px] text-[#5f6368] font-normal font-sans">
+                    Notes you add appear here
+                  </p>
+                </div>
+              ) : currentView === 'archive' ? (
+                /* Empty Archive View */
+                <div data-testid="empty-archive-state" className="flex flex-col items-center gap-6">
+                  <svg
+                    className="w-24 h-24 text-[#dadce0]"
+                    viewBox="0 0 120 120"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <rect
+                      x="16"
+                      y="24"
+                      width="88"
+                      height="24"
+                      rx="6"
+                      stroke="currentColor"
+                      strokeWidth="10"
+                    />
+                    <path
+                      d="M26 48V88C26 94.6274 31.3726 100 38 100H82C88.6274 100 94 94.6274 94 88V48"
+                      stroke="currentColor"
+                      strokeWidth="10"
+                    />
+                    <path
+                      d="M48 64H72"
+                      stroke="currentColor"
+                      strokeWidth="10"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  <p className="text-[20px] sm:text-[22px] text-[#5f6368] font-normal font-sans">
+                    Your archived notes appear here
+                  </p>
+                </div>
+              ) : (
+                /* Empty Trash View */
+                <div data-testid="empty-trash-state" className="flex flex-col items-center gap-6">
+                  <svg
+                    className="w-24 h-28 text-[#dadce0]"
+                    viewBox="0 0 120 130"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M22 36H98"
+                      stroke="currentColor"
+                      strokeWidth="10"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M44 36V22C44 18.6863 46.6863 16 50 16H70C73.3137 16 76 18.6863 76 22V36"
+                      stroke="currentColor"
+                      strokeWidth="10"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M30 36L38 106C38.5 112 43.5 116 49.5 116H70.5C76.5 116 81.5 112 82 106L90 36"
+                      stroke="currentColor"
+                      strokeWidth="10"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <p className="text-[20px] sm:text-[22px] text-[#5f6368] font-normal font-sans">
+                    No notes in Trash
+                  </p>
+                </div>
+              )}
             </div>
           )}
-
-          {/* Masonry / List Card Grid */}
-          <MasonryGrid
-            notes={displayedNotes}
-            isListView={isListView}
-            selectedIds={selectedIds}
-            onSelect={(id) => toggleSelect(id)}
-            onClickNote={(note) => setModalNote(note)}
-            onPin={async (id, pin) => pinNote(id, pin)}
-            onArchive={async (id, arc) => archiveNote(id, arc)}
-            onTrash={async (id) => trashNote(id)}
-            onColorChange={(id) => {
-              const allColorIds: NoteColorId[] = [
-                'coral', 'storm', 'clay', 'chalk', 'peach', 'sand',
-                'mint', 'sage', 'fog', 'dusk', 'blossom', 'earth'
-              ];
-              const current = notes.find((n) => n.id === id);
-              const currentIndex = allColorIds.indexOf(current?.color || 'chalk');
-              const next = allColorIds[(currentIndex + 1) % allColorIds.length];
-              updateNote(id, { color: next });
-            }}
-            onToggleChecklistItem={async (noteId, itemId, checked) => {
-              const targetNote = notes.find((n) => n.id === noteId);
-              if (targetNote && targetNote.checklist_items) {
-                const updatedItems = targetNote.checklist_items.map((i) =>
-                  i.id === itemId ? { ...i, checked } : i
-                );
-                await updateNote(noteId, {
-                  checklist_items: updatedItems,
-                  body: updatedItems.map((i) => i.text).join('\n'),
-                });
-              }
-            }}
-          />
         </main>
       </div>
 
@@ -296,12 +459,24 @@ export default function FuseApp() {
         onClose={() => setModalNote(null)}
         onSave={async (id, patch) => {
           await updateNote(id, patch);
+          if (patch.labels && patch.labels.length > 0) {
+            setLabels((prev) => {
+              const combined = new Set(prev);
+              patch.labels!.forEach((l) => combined.add(l));
+              return Array.from(combined);
+            });
+          }
         }}
         onTrash={async (id) => {
           await trashNote(id);
         }}
         availableLabels={labels}
-        onCreateLabel={(name) => setLabels((l) => [...l, name])}
+        onCreateLabel={(name) => {
+          const trimmed = name.trim();
+          if (trimmed) {
+            setLabels((l) => (l.includes(trimmed) ? l : [...l, trimmed]));
+          }
+        }}
       />
 
       {/* 5. Edit Labels Modal */}

@@ -32,6 +32,7 @@ interface QuickCaptureBarProps {
   onColorChange?: (color: NoteColorId) => void;
   availableLabels?: string[];
   onCreateLabel?: (name: string) => void;
+  defaultLabels?: string[];
 }
 
 export function QuickCaptureBar({
@@ -40,6 +41,7 @@ export function QuickCaptureBar({
   onColorChange,
   availableLabels = ['work', 'personal', 'urgent'],
   onCreateLabel,
+  defaultLabels = [],
 }: QuickCaptureBarProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [bodyText, setBodyText] = useState('');
@@ -47,7 +49,12 @@ export function QuickCaptureBar({
   const [checklistItems, setChecklistItems] = useState<ChecklistItem[]>([]);
   const [newItemText, setNewItemText] = useState('');
   const [color, setColor] = useState<NoteColorId>(selectedColor);
-  const [labels, setLabels] = useState<string[]>([]);
+  const [labels, setLabels] = useState<string[]>(defaultLabels);
+
+  const defaultLabelsKey = defaultLabels.join(',');
+  useEffect(() => {
+    setLabels(defaultLabelsKey ? defaultLabelsKey.split(',') : []);
+  }, [defaultLabelsKey]);
 
   // Popover state
   const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
@@ -107,13 +114,13 @@ export function QuickCaptureBar({
     setChecklistItems([]);
     setNewItemText('');
     setColor('chalk');
-    setLabels([]);
+    setLabels(defaultLabels);
     setIsColorPickerOpen(false);
     setIsMoreMenuOpen(false);
     setIsLabelPopoverOpen(false);
     setShowUrlNotice(false);
     setIsExpanded(false);
-  }, [bodyText, checklistItems, newItemText, isChecklist, color, labels, onSaveNote]);
+  }, [bodyText, checklistItems, newItemText, isChecklist, color, labels, defaultLabels, onSaveNote]);
 
   // Click-outside listener for implicit auto-save
   useEffect(() => {
