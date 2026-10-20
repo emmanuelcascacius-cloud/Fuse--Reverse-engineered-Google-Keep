@@ -51,6 +51,7 @@ npm test
 ```
 # Cloud Fuse 
 Fuse inspired on Google Keep  with many other features is coming on cloud 
+
 Minimal Notes that help you brainstorm your thoughts and capture with long context memory that remembers your important things 
 
 > **[👉 Click here to join the exclusive cloud wait-list](https://bit.ly/3VWLu1M)**
