@@ -108,7 +108,8 @@ export function NoteModal({
       ? finalItems.map((i) => i.text).join('\n')
       : bodyText;
 
-    await onSave(note.id, {
+    // Trigger save asynchronously in background so DB write doesn't stutter the animation
+    const savePromise = onSave(note.id, {
       body: finalBody,
       is_checklist: isChecklist,
       checklist_items: finalItems,
@@ -116,13 +117,14 @@ export function NoteModal({
       is_pinned: isPinned,
       is_archived: isArchived,
       labels,
-    });
+    }).catch(console.error);
 
     // Wait for the smooth compression animation before unmounting
-    setTimeout(() => {
+    setTimeout(async () => {
+      await savePromise;
       setIsClosing(false);
       onClose();
-    }, 200);
+    }, 180);
   }, [note, checklistItems, newItemText, isChecklist, bodyText, onSave, color, isPinned, isArchived, labels, onClose]);
 
   // Keyboard Escape listener
@@ -173,7 +175,7 @@ export function NoteModal({
   return (
     <div
       data-testid="note-modal-backdrop"
-      className={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-[1px] ${
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 ${
         isClosing ? 'animate-backdrop-out' : 'animate-backdrop-in'
       }`}
       onClick={handleSaveAndClose}
