@@ -45,10 +45,10 @@ export default function FuseApp() {
     setFocusedId,
   } = useSelectionStore();
 
-  // Navigation & View State
+  // Navigation & View State (Sidebar defaults to collapsed hoverable rail like Google Keep)
   const [currentView, setCurrentView] = useState<NavView>('notes');
   const [selectedLabel, setSelectedLabel] = useState<string | null>(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isListView, setIsListView] = useState(false);
 
   // Modals state
