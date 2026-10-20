@@ -19,6 +19,10 @@ import {
   LayoutGrid,
   List,
   Undo2,
+  Search,
+  RotateCw,
+  Settings,
+  X,
 } from 'lucide-react';
 
 export default function FuseApp() {
@@ -63,7 +67,10 @@ export default function FuseApp() {
     'ideas',
   ]);
 
-  // Search & Filters state
+  // Search & Refresh state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
   const [filters] = useState<{
     query?: string;
     color?: NoteColorId | null;
@@ -72,10 +79,22 @@ export default function FuseApp() {
     type?: 'checklist' | 'text' | 'url' | null;
   }>({});
 
-  // Initial data load
-  useEffect(() => {
-    fetchNotes();
+  // Winding refresh action (like Google Keep loading animation on session/nav)
+  const triggerRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    try {
+      await fetchNotes();
+    } finally {
+      setTimeout(() => {
+        setIsRefreshing(false);
+      }, 650);
+    }
   }, [fetchNotes]);
+
+  // Auto-refresh when opening new session, changing view, or switching labels
+  useEffect(() => {
+    triggerRefresh();
+  }, [currentView, selectedLabel, triggerRefresh]);
 
   // Auto-sync any labels from existing notes into the sidebar labels list
   useEffect(() => {
@@ -115,10 +134,11 @@ export default function FuseApp() {
   const displayedNotes = useMemo(() => {
     const mergedFilters = {
       ...filters,
+      query: searchQuery.trim() || undefined,
       label: selectedLabel || filters.label,
     };
     return filterNotes(currentDataset, mergedFilters);
-  }, [currentDataset, filters, selectedLabel]);
+  }, [currentDataset, filters, searchQuery, selectedLabel]);
 
   // Global Keyboard Navigation
   useGlobalShortcuts({
@@ -199,9 +219,9 @@ export default function FuseApp() {
   return (
     <div className="min-h-screen flex flex-col bg-canvas text-text-primary antialiased">
       {/* 1. App Header */}
-      <header className="h-14 sm:h-16 px-3 sm:px-4 border-b border-border-hairline flex items-center justify-between sticky top-0 z-30 bg-header backdrop-blur-md">
-        {/* Left: Hamburger Menu */}
-        <div className="flex items-center gap-3">
+      <header className="h-14 sm:h-16 px-2 sm:px-4 border-b border-border-hairline flex items-center justify-between sticky top-0 z-30 bg-header backdrop-blur-md gap-2 sm:gap-4">
+        {/* Left: Hamburger Menu + Brand "Fuse" (No logo, clean Inter/sans font) */}
+        <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
           <button
             type="button"
             aria-label="Toggle navigation drawer"
@@ -210,13 +230,59 @@ export default function FuseApp() {
           >
             <Menu className="w-5 h-5 stroke-[2]" />
           </button>
+          <span className="text-[20px] sm:text-[22px] font-sans font-medium text-text-primary tracking-tight select-none pl-1">
+            Fuse
+          </span>
         </div>
 
-        {/* Right: Actions (View Toggle, Theme Toggle) */}
-        <div className="flex items-center gap-1">
+        {/* Center: Search Bar (Google Keep style) */}
+        <div className="flex-1 max-w-[720px] mx-1 sm:mx-4 min-w-0">
+          <div className="w-full h-10 sm:h-12 bg-[#F1F3F4] rounded-[8px] flex items-center px-3 sm:px-4 transition-all focus-within:bg-white focus-within:shadow-[0_1px_1px_0_rgba(65,69,73,0.3),0_1px_3px_1px_rgba(65,69,73,0.15)] border border-transparent">
+            <Search className="w-5 h-5 text-[#5f6368] flex-shrink-0" />
+            <input
+              type="text"
+              data-testid="search-input"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search"
+              className="w-full bg-transparent border-none text-[16px] text-text-primary placeholder:text-[#5f6368] focus:outline-none ml-2.5 sm:ml-3"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                aria-label="Clear search"
+                onClick={() => setSearchQuery('')}
+                className="w-7 h-7 rounded-full flex items-center justify-center text-[#5f6368] hover:text-text-primary hover:bg-black/5 flex-shrink-0 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Right: Actions (Refresh with auto-winding, View Toggle, Settings) */}
+        <div className="flex items-center gap-0.5 sm:gap-1 flex-shrink-0">
+          {/* Refresh button with winding animation */}
+          <button
+            type="button"
+            aria-label="Refresh"
+            title="Refresh"
+            disabled={isRefreshing}
+            className="w-10 h-10 rounded-full flex items-center justify-center text-icon-default hover:text-text-primary hover:bg-icon-hover-bg transition-colors cursor-pointer"
+            onClick={() => triggerRefresh()}
+          >
+            <RotateCw
+              className={`w-5 h-5 stroke-[1.75] transition-transform ${
+                isRefreshing ? 'animate-spin' : ''
+              }`}
+            />
+          </button>
+
+          {/* Grid / List View Toggle */}
           <button
             type="button"
             aria-label={isListView ? 'Switch to grid view' : 'Switch to list view'}
+            title={isListView ? 'Grid view' : 'List view'}
             className="w-10 h-10 rounded-full flex items-center justify-center text-icon-default hover:text-text-primary hover:bg-icon-hover-bg transition-colors cursor-pointer"
             onClick={() => setIsListView(!isListView)}
           >
@@ -225,6 +291,16 @@ export default function FuseApp() {
             ) : (
               <List className="w-5 h-5 stroke-[1.75]" />
             )}
+          </button>
+
+          {/* Settings button */}
+          <button
+            type="button"
+            aria-label="Settings"
+            title="Settings"
+            className="w-10 h-10 rounded-full flex items-center justify-center text-icon-default hover:text-text-primary hover:bg-icon-hover-bg transition-colors cursor-pointer"
+          >
+            <Settings className="w-5 h-5 stroke-[1.75]" />
           </button>
         </div>
       </header>
@@ -322,7 +398,15 @@ export default function FuseApp() {
           ) : (
             /* Google Keep Empty States (Centered beneath QuickCaptureBar) */
             <div className="flex-1 flex flex-col items-center justify-center pt-20 pb-16 select-none text-center">
-              {currentView === 'notes' && selectedLabel ? (
+              {searchQuery.trim() ? (
+                /* Empty Search Results State */
+                <div data-testid="empty-search-state" className="flex flex-col items-center gap-4">
+                  <Search className="w-16 h-16 text-[#dadce0] stroke-[1.5]" />
+                  <p className="text-[20px] sm:text-[22px] text-[#5f6368] font-normal font-sans">
+                    No matching results
+                  </p>
+                </div>
+              ) : currentView === 'notes' && selectedLabel ? (
                 /* Empty Label View: "No notes with this label yet" with Google Keep tag icon */
                 <div data-testid="empty-label-state" className="flex flex-col items-center gap-6">
                   <svg
