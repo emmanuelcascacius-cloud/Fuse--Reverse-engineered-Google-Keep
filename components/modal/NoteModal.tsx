@@ -122,7 +122,7 @@ export function NoteModal({
     setTimeout(() => {
       setIsClosing(false);
       onClose();
-    }, 160);
+    }, 200);
   }, [note, checklistItems, newItemText, isChecklist, bodyText, onSave, color, isPinned, isArchived, labels, onClose]);
 
   // Keyboard Escape listener
@@ -173,14 +173,14 @@ export function NoteModal({
   return (
     <div
       data-testid="note-modal-backdrop"
-      className={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-[1px] transition-opacity duration-160 ${
-        isClosing ? 'opacity-0' : 'opacity-100 animate-in fade-in duration-140'
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-[1px] ${
+        isClosing ? 'animate-backdrop-out' : 'animate-backdrop-in'
       }`}
       onClick={handleSaveAndClose}
     >
       <div
         data-testid="note-modal-content"
-        className={`w-full max-w-[600px] max-h-[85vh] rounded-[8px] border shadow-2xl flex flex-col relative transition-all ${
+        className={`w-full max-w-[600px] max-h-[85vh] rounded-[8px] border shadow-2xl flex flex-col relative ${
           isClosing ? 'animate-keep-collapse' : 'animate-keep-expand'
         }`}
         style={{
