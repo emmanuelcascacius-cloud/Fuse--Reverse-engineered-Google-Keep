@@ -205,7 +205,9 @@ export function QuickCaptureBar({
     <div
       ref={containerRef}
       data-testid="quick-capture-bar"
-      className="w-full max-w-[600px] mx-auto my-6 rounded-[8px] border transition-all duration-200 select-none shadow-capture relative overflow-hidden"
+      className={`w-full max-w-[600px] mx-auto my-6 rounded-[8px] border transition-all duration-200 select-none shadow-capture relative ${
+        isExpanded ? 'overflow-visible z-20' : 'overflow-hidden'
+      }`}
       style={{
         backgroundColor: colorStyles.bg,
         borderColor: colorStyles.border,
@@ -226,7 +228,7 @@ export function QuickCaptureBar({
         </div>
       ) : (
         /* Expanded State: strictly NO title field, NO top pin */
-        <div className="flex flex-col p-4 pt-3 gap-3 max-h-[60vh] overflow-y-auto scrollbar-none">
+        <div className="flex flex-col p-4 pt-3 gap-3 overflow-visible">
           {/* Note Body or Google Tasks-Style Checklist */}
           {!isChecklist ? (
             <textarea
@@ -338,7 +340,7 @@ export function QuickCaptureBar({
           )}
 
           {/* Bottom Toolbar */}
-          <div className="flex items-center justify-between pt-2 relative">
+          <div className="flex items-center justify-between pt-2 relative overflow-visible z-30">
             <div className="flex items-center gap-1">
               {/* Color Button with full 12-color picker popover */}
               <div className="relative">
@@ -352,7 +354,7 @@ export function QuickCaptureBar({
                 </button>
 
                 {isColorPickerOpen && (
-                  <div className="absolute bottom-10 left-0 z-50">
+                  <div className="absolute top-full mt-1.5 left-0 z-50">
                     <ColorStatePicker
                       selectedColor={color}
                       onSelectColor={(c) => {
@@ -392,10 +394,10 @@ export function QuickCaptureBar({
                   <MoreVertical className="w-[18px] h-[18px] stroke-[1.75]" />
                 </button>
 
-                {/* 3 Dots Menu */}
+                {/* 3 Dots Menu — Drops down cleanly below bar, zero slopping into card */}
                 {isMoreMenuOpen && (
                   <div
-                    className="absolute bottom-10 left-0 z-50 w-40 bg-canvas rounded-[8px] border border-border-hairline shadow-xl py-1 select-none animate-in fade-in zoom-in-95 duration-100"
+                    className="absolute top-full mt-1.5 left-0 z-50 w-44 bg-canvas rounded-[8px] border border-border-hairline shadow-2xl py-1 select-none animate-in fade-in zoom-in-95 duration-100"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <button
@@ -424,7 +426,7 @@ export function QuickCaptureBar({
                   </div>
                 )}
 
-                {/* In-context Google Keep Label Popover */}
+                {/* In-context Google Keep Label Popover — Drops down cleanly below bar, zero clipping */}
                 <NoteLabelPopover
                   isOpen={isLabelPopoverOpen}
                   onClose={() => setIsLabelPopoverOpen(false)}
@@ -432,7 +434,7 @@ export function QuickCaptureBar({
                   availableLabels={availableLabels}
                   onToggleLabel={toggleLabel}
                   onCreateLabel={createAndAttachLabel}
-                  anchorClassName="bottom-10 left-0"
+                  anchorClassName="top-full mt-1.5 left-0"
                 />
               </div>
             </div>

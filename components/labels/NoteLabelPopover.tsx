@@ -20,7 +20,7 @@ export function NoteLabelPopover({
   availableLabels,
   onToggleLabel,
   onCreateLabel,
-  anchorClassName = 'bottom-10 left-8',
+  anchorClassName = 'top-full mt-1.5 left-0',
 }: NoteLabelPopoverProps) {
   const [query, setQuery] = useState('');
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -62,7 +62,7 @@ export function NoteLabelPopover({
     <div
       ref={popoverRef}
       data-testid="note-label-popover"
-      className={`absolute z-50 w-56 bg-canvas rounded-[8px] border border-border-hairline shadow-xl py-2 flex flex-col gap-1 select-none animate-in fade-in zoom-in-95 duration-100 ${anchorClassName}`}
+      className={`absolute z-50 w-64 bg-canvas rounded-[8px] border border-border-hairline shadow-2xl py-2 flex flex-col gap-1 select-none animate-in fade-in zoom-in-95 duration-100 ${anchorClassName}`}
       onClick={(e) => e.stopPropagation()}
     >
       <div className="px-3 pb-1 text-[12px] font-medium text-text-secondary">
@@ -99,7 +99,7 @@ export function NoteLabelPopover({
       </div>
 
       {/* Existing Labels List with Google Keep Checkboxes */}
-      <div className="max-h-44 overflow-y-auto px-1 flex flex-col gap-0.5 scrollbar-none">
+      <div className="max-h-72 overflow-y-auto px-1 flex flex-col gap-0.5 scrollbar-none">
         {filteredLabels.map((lbl) => {
           const isChecked = selectedLabels.includes(lbl);
           return (
