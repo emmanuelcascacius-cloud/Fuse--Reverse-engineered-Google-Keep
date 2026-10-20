@@ -62,14 +62,18 @@ export function ColorStatePicker({
   useEffect(() => {
     if (!isOpen) return;
 
-    const handleClickOutside = (e: MouseEvent) => {
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         onClose?.();
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
@@ -114,7 +118,7 @@ export function ColorStatePicker({
     <div
       ref={containerRef}
       data-testid="color-state-picker-popover"
-      className={`p-[8px_12px] rounded-[8px] bg-canvas border border-border-hairline shadow-lg flex flex-col gap-[6px] z-50 select-none animate-in fade-in zoom-in-95 duration-140 ${className}`}
+      className={`p-[8px_12px] max-w-[calc(100vw-24px)] rounded-[8px] bg-canvas border border-border-hairline shadow-lg flex flex-col gap-[6px] z-50 select-none animate-in fade-in zoom-in-95 duration-140 ${className}`}
       onClick={(e) => e.stopPropagation()}
     >
       {/* Row 1: Primary States (Coral, Storm, Clay) First, followed by Chalk, Peach, Sand */}

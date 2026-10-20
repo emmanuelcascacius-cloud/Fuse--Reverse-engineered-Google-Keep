@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import '@/styles/globals.css';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
 import { ServiceWorkerRegister } from '@/components/pwa/ServiceWorkerRegister';
@@ -7,6 +7,14 @@ export const metadata: Metadata = {
   title: 'Fuse',
   description: 'Fast, lightweight, offline-first note-taking modeled after Google Keep',
   manifest: '/manifest.json',
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover',
 };
 
 export default function RootLayout({

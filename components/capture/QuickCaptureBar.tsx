@@ -119,7 +119,7 @@ export function QuickCaptureBar({
   useEffect(() => {
     if (!isExpanded) return;
 
-    const handleClickOutside = (e: MouseEvent) => {
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         handleSaveAndReset();
       }
@@ -144,9 +144,11 @@ export function QuickCaptureBar({
     };
 
     document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
     document.addEventListener('keydown', handleKeyDown);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [isExpanded, isColorPickerOpen, isMoreMenuOpen, isLabelPopoverOpen, handleSaveAndReset]);
@@ -188,6 +190,16 @@ export function QuickCaptureBar({
     );
   };
 
+  const handleEditCheckItem = (id: string, text: string) => {
+    setChecklistItems((items) =>
+      items.map((i) => (i.id === id ? { ...i, text } : i))
+    );
+  };
+
+  const handleRemoveCheckItem = (id: string) => {
+    setChecklistItems((items) => items.filter((i) => i.id !== id));
+  };
+
   const toggleLabel = (labelName: string) => {
     setLabels((prev) =>
       prev.includes(labelName)
@@ -205,7 +217,7 @@ export function QuickCaptureBar({
     <div
       ref={containerRef}
       data-testid="quick-capture-bar"
-      className={`w-full max-w-[600px] mx-auto my-6 rounded-[8px] border transition-all duration-200 select-none shadow-capture relative ${
+      className={`w-full max-w-[600px] mx-auto my-3 sm:my-6 rounded-[8px] border transition-all duration-200 select-none shadow-capture relative ${
         isExpanded ? 'overflow-visible z-20' : 'overflow-hidden'
       }`}
       style={{
@@ -237,12 +249,12 @@ export function QuickCaptureBar({
               placeholder="Take a note..."
               value={bodyText}
               onChange={(e) => setBodyText(e.target.value)}
-              className="w-full bg-transparent resize-none text-[15px] leading-[22px] font-sans text-text-primary placeholder:text-text-secondary focus:outline-none min-h-[90px] overflow-x-hidden scrollbar-none"
+              className="w-full bg-transparent resize-none text-[16px] sm:text-[15px] leading-[22px] font-sans text-text-primary placeholder:text-text-secondary focus:outline-none min-h-[90px] overflow-x-hidden scrollbar-none"
               autoFocus
             />
           ) : (
             <div className="flex flex-col gap-2">
-              {checklistItems.map((item, index) => (
+              {checklistItems.map((item) => (
                 <div key={item.id} className="flex items-center gap-2 py-0.5">
                   {/* Google Tasks style clickable checkbox box */}
                   <button
@@ -260,36 +272,20 @@ export function QuickCaptureBar({
                   <input
                     type="text"
                     value={item.text}
-                    onChange={(e) => {
-                      const updated = [...checklistItems];
-                      updated[index].text = e.target.value;
-                      setChecklistItems(updated);
-                    }}
+                    placeholder="List item..."
+                    onChange={(e) => handleEditCheckItem(item.id, e.target.value)}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
+                      if (e.key === 'Backspace' && item.text === '') {
                         e.preventDefault();
-                        const nextId = generateUUID();
-                        const updated = [...checklistItems];
-                        updated.splice(index + 1, 0, {
-                          id: nextId,
-                          text: '',
-                          checked: false,
-                          position: index + 2,
-                        });
-                        setChecklistItems(updated);
-                      } else if (e.key === 'Backspace' && item.text === '' && checklistItems.length > 1) {
-                        e.preventDefault();
-                        setChecklistItems(checklistItems.filter((_, i) => i !== index));
+                        handleRemoveCheckItem(item.id);
                       }
                     }}
-                    className={`flex-1 bg-transparent text-[14px] focus:outline-none transition-colors ${
-                      item.checked ? 'line-through text-text-secondary' : 'text-text-primary'
+                    className={`flex-1 bg-transparent text-[16px] sm:text-[14px] text-text-primary placeholder:text-text-secondary focus:outline-none ${
+                      item.checked ? 'line-through text-text-muted opacity-60' : ''
                     }`}
                   />
                 </div>
               ))}
-
-              {/* Seamless new item input without separator line */}
               <div className="flex items-center gap-2 py-0.5">
                 <span className="w-[18px] h-[18px] rounded-[4px] border border-icon-default/40 flex-shrink-0" />
                 <input
@@ -298,12 +294,12 @@ export function QuickCaptureBar({
                   value={newItemText}
                   onChange={(e) => setNewItemText(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
+                    if (e.key === 'Enter' && newItemText.trim()) {
                       e.preventDefault();
                       handleAddChecklistItem();
                     }
                   }}
-                  className="flex-1 bg-transparent text-[14px] text-text-primary placeholder:text-text-secondary focus:outline-none"
+                  className="flex-1 bg-transparent text-[16px] sm:text-[14px] text-text-primary placeholder:text-text-secondary focus:outline-none"
                 />
               </div>
             </div>

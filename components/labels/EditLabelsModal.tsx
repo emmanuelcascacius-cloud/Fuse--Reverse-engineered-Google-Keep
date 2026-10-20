@@ -88,7 +88,7 @@ export function EditLabelsModal({
                 handleCreate();
               }
             }}
-            className="flex-1 bg-transparent text-[14px] text-text-primary placeholder:text-text-secondary focus:outline-none"
+            className="flex-1 bg-transparent text-[16px] sm:text-[14px] text-text-primary placeholder:text-text-secondary focus:outline-none"
           />
           {newLabelText.trim().length > 0 && (
             <button
@@ -130,7 +130,7 @@ export function EditLabelsModal({
                       if (e.key === 'Escape') setEditingIndex(null);
                     }}
                     autoFocus
-                    className="flex-1 bg-transparent border-b border-text-primary text-[14px] text-text-primary focus:outline-none"
+                    className="flex-1 bg-transparent border-b border-text-primary text-[16px] sm:text-[14px] text-text-primary focus:outline-none"
                   />
                   <button
                     type="button"
@@ -151,7 +151,7 @@ export function EditLabelsModal({
                 <button
                   type="button"
                   aria-label={`Rename label ${label}`}
-                  className="w-6 h-6 opacity-0 group-hover:opacity-100 flex items-center justify-center text-icon-default hover:text-text-primary cursor-pointer transition-opacity"
+                  className="w-6 h-6 opacity-70 sm:opacity-0 sm:group-hover:opacity-100 flex items-center justify-center text-icon-default hover:text-text-primary cursor-pointer transition-opacity"
                   onClick={() => {
                     setEditingIndex(index);
                     setEditingText(label);

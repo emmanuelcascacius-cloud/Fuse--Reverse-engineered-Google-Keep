@@ -73,7 +73,16 @@ export function useMasonryColumns(sidebarWidth = 280) {
   useEffect(() => {
     const update = () => {
       if (typeof window !== 'undefined') {
-        setColumns(calculateColumnCount(window.innerWidth, sidebarWidth));
+        const width = window.innerWidth;
+        const isMobile = width < 768;
+        const effectiveSidebar = isMobile ? 0 : sidebarWidth;
+
+        if (width < 640) {
+          // Phone screens (iPhone 16, Pixel 9/10): Google Keep displays 2 columns in grid view
+          setColumns(width >= 360 ? 2 : 1);
+        } else {
+          setColumns(calculateColumnCount(width, effectiveSidebar));
+        }
       }
     };
 

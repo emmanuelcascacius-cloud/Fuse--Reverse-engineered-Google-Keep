@@ -172,7 +172,7 @@ export default function FuseApp() {
   return (
     <div className="min-h-screen flex flex-col bg-canvas text-text-primary antialiased">
       {/* 1. App Header */}
-      <header className="h-16 px-4 border-b border-border-hairline flex items-center justify-between sticky top-0 z-30 bg-header backdrop-blur-md">
+      <header className="h-14 sm:h-16 px-3 sm:px-4 border-b border-border-hairline flex items-center justify-between sticky top-0 z-30 bg-header backdrop-blur-md">
         {/* Left: Hamburger Menu */}
         <div className="flex items-center gap-3">
           <button
@@ -210,6 +210,7 @@ export default function FuseApp() {
           selectedLabel={selectedLabel}
           labels={labels}
           isOpen={isSidebarOpen}
+          onCloseMobile={() => setIsSidebarOpen(false)}
           onSelectView={(v) => {
             setCurrentView(v);
             setSelectedLabel(null);
@@ -222,7 +223,7 @@ export default function FuseApp() {
         />
 
         {/* Notes Feed Canvas */}
-        <main className="flex-1 overflow-y-auto px-4 pb-16">
+        <main className="flex-1 overflow-y-auto px-2 sm:px-4 pb-16">
           {/* Quick Capture Bar (Only shown in active notes view) */}
           {currentView === 'notes' && !selectedLabel && (
             <QuickCaptureBar
@@ -327,7 +328,7 @@ export default function FuseApp() {
       {lastDeletedNote && (
         <div
           data-testid="undo-toast"
-          className="fixed bottom-4 left-6 z-50 px-4 py-2.5 rounded-[6px] bg-[#202124] text-white text-[14px] flex items-center gap-4 shadow-xl border border-white/10 animate-in fade-in slide-in-from-bottom-2 duration-140 select-none"
+          className="fixed bottom-4 left-1/2 -translate-x-1/2 sm:left-6 sm:translate-x-0 w-[calc(100%-32px)] max-w-sm sm:max-w-md z-50 px-4 py-2.5 rounded-[6px] bg-[#202124] text-white text-[14px] flex items-center justify-between shadow-xl border border-white/10 animate-in fade-in slide-in-from-bottom-2 duration-140 select-none"
         >
           <span>Note moved to trash</span>
           <button

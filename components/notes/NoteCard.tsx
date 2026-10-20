@@ -58,7 +58,7 @@ export function NoteCard({
       data-note-id={note.id}
       data-color={note.color}
       className={`relative group rounded-[8px] transition-shadow duration-140 cursor-default select-none flex flex-col justify-between overflow-hidden overflow-x-hidden overflow-y-hidden scrollbar-none border ${
-        isListView ? 'w-full max-w-[600px]' : 'w-[240px]'
+        isListView ? 'w-full max-w-[600px]' : 'w-full sm:w-[240px]'
       } min-h-[60px] max-h-[380px] hover:shadow-card-hover-light dark:hover:shadow-card-hover-dark`}
       style={{
         backgroundColor: colorStyles.bg,

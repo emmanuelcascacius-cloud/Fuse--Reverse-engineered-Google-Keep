@@ -35,7 +35,7 @@ export function BatchActionBar({
   return (
     <div
       data-testid="batch-action-bar"
-      className="fixed top-3 left-1/2 -translate-x-1/2 z-40 w-full max-w-[560px] h-12 rounded-[8px] bg-canvas border border-border-hairline shadow-lg px-4 flex items-center justify-between animate-in fade-in slide-in-from-top-2 duration-140 select-none"
+      className="fixed top-3 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-24px)] max-w-[560px] h-12 rounded-[8px] bg-canvas border border-border-hairline shadow-lg px-4 flex items-center justify-between animate-in fade-in slide-in-from-top-2 duration-140 select-none"
     >
       {/* Left: Close and count */}
       <div className="flex items-center gap-3">

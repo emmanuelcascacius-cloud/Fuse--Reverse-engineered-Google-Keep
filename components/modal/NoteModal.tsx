@@ -175,14 +175,14 @@ export function NoteModal({
   return (
     <div
       data-testid="note-modal-backdrop"
-      className={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 ${
+      className={`fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-4 bg-black/60 ${
         isClosing ? 'animate-backdrop-out' : 'animate-backdrop-in'
       }`}
       onClick={handleSaveAndClose}
     >
       <div
         data-testid="note-modal-content"
-        className={`w-full max-w-[600px] max-h-[85vh] rounded-[8px] border shadow-2xl flex flex-col relative ${
+        className={`w-full h-full sm:h-auto sm:max-w-[600px] sm:max-h-[85vh] rounded-none sm:rounded-[8px] border-0 sm:border shadow-2xl flex flex-col relative ${
           isClosing ? 'animate-keep-collapse' : 'animate-keep-expand'
         }`}
         style={{
@@ -192,7 +192,7 @@ export function NoteModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top-Right Pin Button */}
-        <div className="absolute top-3 right-3 flex items-center gap-1 z-10">
+        <div className="absolute top-[max(0.75rem,env(safe-area-inset-top))] sm:top-3 right-3 flex items-center gap-1 z-10">
           <button
             type="button"
             aria-label={isPinned ? 'Unpin note' : 'Pin note'}
@@ -206,7 +206,7 @@ export function NoteModal({
         </div>
 
         {/* Modal Scrollable Body (Strictly NO Title Input, scrollbar-none, NO white dividing lines) */}
-        <div className="p-6 pt-5 pb-3 flex-1 overflow-y-auto overflow-x-hidden scrollbar-none flex flex-col gap-3">
+        <div className="p-4 sm:p-6 pt-[max(1.25rem,env(safe-area-inset-top))] sm:pt-5 pb-3 flex-1 overflow-y-auto overflow-x-hidden scrollbar-none flex flex-col gap-3">
           {/* Domain Chip if linked */}
           {note.source_domain && (
             <div className="flex items-center gap-1.5 text-text-muted text-[12px] font-medium">
@@ -256,7 +256,7 @@ export function NoteModal({
                       setNewItemText('');
                     }
                   }}
-                  className="flex-1 bg-transparent text-[14px] text-text-primary placeholder:text-text-secondary focus:outline-none"
+                  className="flex-1 bg-transparent text-[16px] sm:text-[14px] text-text-primary placeholder:text-text-secondary focus:outline-none"
                 />
               </div>
             </div>
@@ -294,7 +294,7 @@ export function NoteModal({
         </div>
 
         {/* Bottom Toolbar (NO white border-t line, NO archive, overflow-visible for clean popovers) */}
-        <div className="px-4 py-2 flex items-center justify-between relative overflow-visible z-20">
+        <div className="px-4 py-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:pb-2 flex items-center justify-between relative overflow-visible z-20">
           <div className="flex items-center gap-1">
             {/* Color Palette (opens full 12-color picker popover floating UPWARDS) */}
             <div className="relative">

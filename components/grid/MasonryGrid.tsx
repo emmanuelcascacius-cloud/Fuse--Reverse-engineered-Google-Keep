@@ -43,13 +43,13 @@ export function MasonryGrid({
 
     if (isListView) {
       return (
-        <div className="w-full flex flex-col items-center gap-4">
+        <div className="w-full flex flex-col items-center gap-3 sm:gap-4 px-2 sm:px-0">
           {title && (
-            <div className="w-full max-w-[600px] text-[11px] font-medium tracking-[0.08em] uppercase text-text-secondary px-4 mt-6 mb-2">
+            <div className="w-full max-w-[600px] text-[11px] font-medium tracking-[0.08em] uppercase text-text-secondary px-2 sm:px-4 mt-4 sm:mt-6 mb-1 sm:mb-2">
               {title}
             </div>
           )}
-          <div className="w-full flex flex-col items-center gap-4">
+          <div className="w-full flex flex-col items-center gap-3 sm:gap-4">
             {sectionNotes.map((note) => (
               <NoteCard
                 key={note.id}
@@ -75,19 +75,19 @@ export function MasonryGrid({
     return (
       <div className="w-full flex flex-col items-center">
         {title && (
-          <div className="w-full max-w-full text-[11px] font-medium tracking-[0.08em] uppercase text-text-secondary px-4 mt-6 mb-2 text-left">
+          <div className="w-full max-w-full text-[11px] font-medium tracking-[0.08em] uppercase text-text-secondary px-2 sm:px-4 mt-4 sm:mt-6 mb-1 sm:mb-2 text-left">
             {title}
           </div>
         )}
         <div
-          className="flex justify-center gap-4 w-full"
+          className="flex justify-center gap-2 sm:gap-4 w-full px-1 sm:px-0"
           data-testid="masonry-columns-container"
         >
           {packedColumns.map((colNotes, colIndex) => (
             <div
               key={colIndex}
               data-testid={`masonry-column-${colIndex}`}
-              className="flex flex-col gap-4 w-[240px]"
+              className="flex flex-col gap-2 sm:gap-4 flex-1 min-w-0 sm:flex-initial sm:w-[240px]"
             >
               {colNotes.map((note) => (
                 <NoteCard

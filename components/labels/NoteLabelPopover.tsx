@@ -37,14 +37,18 @@ export function NoteLabelPopover({
   useEffect(() => {
     if (!isOpen) return;
 
-    const handleClickOutside = (e: MouseEvent) => {
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
       if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
         onClose();
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
@@ -62,7 +66,7 @@ export function NoteLabelPopover({
     <div
       ref={popoverRef}
       data-testid="note-label-popover"
-      className={`absolute z-50 w-64 bg-canvas rounded-[8px] border border-border-hairline shadow-2xl py-2 flex flex-col gap-1 select-none animate-in fade-in zoom-in-95 duration-100 ${anchorClassName}`}
+      className={`absolute z-50 w-64 max-w-[calc(100vw-32px)] bg-canvas rounded-[8px] border border-border-hairline shadow-2xl py-2 flex flex-col gap-1 select-none animate-in fade-in zoom-in-95 duration-100 ${anchorClassName}`}
       onClick={(e) => e.stopPropagation()}
     >
       <div className="px-3 pb-1 text-[12px] font-medium text-text-secondary">
@@ -93,7 +97,7 @@ export function NoteLabelPopover({
                 onClose();
               }
             }}
-            className="flex-1 bg-transparent text-[13px] text-text-primary placeholder:text-text-secondary focus:outline-none"
+            className="flex-1 bg-transparent text-[16px] sm:text-[13px] text-text-primary placeholder:text-text-secondary focus:outline-none"
           />
         </div>
       </div>
